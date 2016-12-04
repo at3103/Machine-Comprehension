@@ -1,24 +1,34 @@
 import os
 import json
 
-def parse_data(path):
-    for (root, files, filenames) in os.walk(path):
-        for file in filenames:
-            parse_json(os.path.join(root, file))
-
 def parse_json(filename):
     # print filename
-    with open(filename) as json_file:
-        file_data = json.load(json_file)
-        sentences = file_data['sentences']
-        for sentence in sentences:
-            pos = sentence['pos']
-            tokens = sentence['tokens']
-            parse = sentence['parse']
-            constituents = sentence['constituents']
+    elements = []
+    ext = '.json'
+    i = 0
 
-"""
-Read in processed data from JSON, create features, save to CSV
-"""
-if __name__ == '__main__':
-	parse_data("../data/processed")
+    while i < 2:
+        if i == 1:
+            filename = filename + '_q'
+        if os.path.isfile(filename + ext):
+            with open(filename + ext) as json_file:
+                file_data = json.load(json_file)
+                if i == 1:
+                    sentences = file_data['questions']['sentences']
+                else:
+                    sentences = file_data['sentences']
+                pos = []
+                tokens = []
+                parse = []
+                constituents = []
+                for sentence in sentences:
+                    pos.append(sentence['pos'])
+                    tokens.append(sentence['tokens'])
+                    parse.append(sentence['parse'])
+                    constituents.append(sentence['constituents'])
+                elements.append([pos,tokens,parse,constituents])
+        else:
+            elements.append([])
+        i += 1
+    #elements[0] --> ans | elements[1] --> qs
+    return elements[0], elements[1]
