@@ -32,7 +32,7 @@ def cosine_similarity(vec1, vec2):
 	product = 0
 
 	for i in range(len(vec1)):
-		product = vec1[i] * vec2[i]
+		product += vec1[i] * vec2[i]
 
 	return product / (vec1_magnitude * vec2_magnitude)
 
@@ -153,6 +153,7 @@ def parse_data(path):
 			line_list = line.split()
 			word = line_list.pop(0)
 			word_vectors[word] = line_list
+
 			# Temporarily calculating here
 			tf_idf[word] = 1
 
