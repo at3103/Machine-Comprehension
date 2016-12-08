@@ -16,20 +16,25 @@ def parse_json(filename):
                 d = []
                 if i == 1:
                     for q in file_data['questions']:
-                        d.append(q['sentences'])
+                        d.append(q.get('sentences',[]))
                 else:
-                    d.append(file_data['sentences'])
+                    print json_file
+                    d.append(file_data.get('sentences',[]))
                 pos = []
                 tokens = []
                 parse = []
                 constituents = []
+                deps_basic = []
+                lemmas = []
                 for sentences in d:
                     for sentence in sentences:
                         pos.append(sentence['pos'])
                         tokens.append(sentence['tokens'])
                         parse.append(sentence['parse'])
+                        deps_basic.append(sentence['deps_basic'])
+                        lemmas.append(sentence['lemmas'])
                         constituents.append(sentence['constituents'])
-                    elements.append([pos,tokens,parse,constituents])
+                    elements.append([{'pos':pos,'tokens':tokens,'parse':parse,'constituents':constituents, 'deps_basic':deps_basic, 'lemmas':lemmas}])
         else:
             elements.append([])
         i += 1

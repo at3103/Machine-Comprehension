@@ -1,21 +1,20 @@
 import os
 import json
 import math
+import operator
 from feature_extractor import *
 
-word_vectors_filename = "../data/glove.6B/glove.6B.50d.txt"
+word_vectors_filename = "../data/glove/glove.6B.50d.txt"
 word_vectors = {}
 tf_idf = {}
 cosine_similarity_threshold = 0.95
-# def parse_json(file):
-# 	with open(file + '.json') as req_data_file:
-# 		data_json = json.load(req_data_file)
 
 def vector_magnitude(vec):
 	magnitude = 0
-	for val in vec:
-		magnitude += val * val
-
+	# for val in vec:
+	# 	magnitude += val * val
+	vec = map(float,vec)
+	magnitude = sum(map(operator.mul,vec,vec))
 	magnitude = math.sqrt(magnitude)
 	return magnitude
 
@@ -23,17 +22,20 @@ def cosine_similarity(vec1, vec2):
 	if vec1 is None or vec2 is None:
 		return 0
 
+	print vec1,vec2
 	if(len(vec1) != len(vec2)):
 		print("Vectors not of same length!")
 		return 0
 
+	product = 0
+	vec1 = map(float,vec1)
+	vec2 = map(float,vec2)
 	vec1_magnitude = vector_magnitude(vec1)
 	vec2_magnitude = vector_magnitude(vec2)
-	product = 0
 
-	for i in range(len(vec1)):
-		product += vec1[i] * vec2[i]
-
+	# for i in range(len(vec1)):
+	# 	product += vec1[i] * vec2[i]
+	product = sum(map(operator.mul,vec1,vec2))
 	return product / (vec1_magnitude * vec2_magnitude)
 
 def matching_word_frequencies_feature(tokens, q_tokens, n):
@@ -46,14 +48,21 @@ def matching_word_frequencies_feature(tokens, q_tokens, n):
 		for j in range(len(q_tokens) - n - 1):
 			curr_q_ngram = q_tokens[j : j + n - 1]
 			# Check similarity by seeing if the normalised inner product of the two associated word vectors is close to 1
-			token_vec = [word_vectors[token] for token in curr_ngram]
-			q_token_vec = [word_vectors[token] for token in curr_q_ngram]
+			token_vec = [word_vectors.get(str(token)) for token in curr_ngram]
+			print token_vec
+			q_token_vec = [word_vectors.get(str(token)) for token in curr_q_ngram]
+			print q_token_vec
 			if None in token_vec or None in q_token_vec:
 				vec_not_found += 1
+			elif not token_vec or not q_token_vec:
+				vec_not_found += 1
 			else:
-				similarity = [cosine_similarity(vec1, vec2) for vec1, vec2 in zip(token_vec, q_token_vec)]
+				#similarity = [cosine_similarity(vec1, vec2) for vec1, vec2 in zip(token_vec, q_token_vec)]
+				similarity = cosine_similarity(token_vec, q_token_vec)# for vec1, vec2 in zip(token_vec, q_token_vec)]
 				if all(s >= cosine_similarity_threshold for s in similarity):
-					tf_idf_sum += tf_idf[token_vec]
+					# tf_idf_sum = map(sum,tf_idf_sum,tf_idf[])
+					for vec in token_vec:
+						tf_idf_sum += vec
 
 	return tf_idf_sum
 
@@ -74,13 +83,13 @@ def root_match_feature(deptree, tokens, question_deptree, question_tokens):
 			break
 
 	root_match['similar_roots'] = (cosine_similarity(
-		word_vectors[deptree_root_token], word_vectors[question_deptree_root_token]) >= cosine_similarity_threshold)
+		word_vectors.get(deptree_root_token), word_vectors.get(question_deptree_root_token)) >= cosine_similarity_threshold)
 
 	# Find if the sentence contains the root of the dependency parse tree of the question
 	root_match['question_in_dep'] = False
 	for token in tokens:
 		if (cosine_similarity(
-				word_vectors[token], word_vectors[question_deptree_root_token]) >= cosine_similarity_threshold):
+				word_vectors.get(str(token)), word_vectors.get(str(question_deptree_root_token))) >= cosine_similarity_threshold):
 			root_match['question_in_dep'] = True
 			break
 
@@ -88,7 +97,7 @@ def root_match_feature(deptree, tokens, question_deptree, question_tokens):
 	root_match['sentence_in_dep'] = False
 	for token in question_tokens:
 		if (cosine_similarity(
-				word_vectors[token], word_vectors[deptree_root_token]) >= cosine_similarity_threshold):
+				word_vectors.get(str(token)), word_vectors.get(deptree_root_token)) >= cosine_similarity_threshold):
 			root_match['sentence_in_dep'] = True
 			break
 
@@ -96,8 +105,8 @@ def root_match_feature(deptree, tokens, question_deptree, question_tokens):
 
 def sum_tf_idf(span):
 	tf_idf_sum = 0
-	for token in span:
-		tf_idf_sum += tf_idf[token]
+	for token in span['text_tokens']:
+		tf_idf_sum += tf_idf.get(token,0)
 
 	return tf_idf_sum
 
@@ -114,18 +123,26 @@ def length_feature(span, tokens):
 
 def pos_feature(span, pos):
     # Calculate POS tags of the constituent
-    pos_tags = pos[span['start'], span['']]
+    #pos_tags = pos[span['start'], span['']]
+    pos_tags = pos[span['start']],pos[span['end']]
     return pos_tags
+    #return
 
 def lemmas_feature(span, lemmas, question_lemmas):
-	lemma_similarity = [0, 0, 0, 0]
+	#lemma_similarity = [0, 0, 0, 0]
+	lemma_similarity = [0]*len(lemmas)
 	lemma_indices = [span['start'] - 2, span['start'] - 1, span['end'] + 1, span['end'] + 2]
 	# Compute similarity of lemmas of required words with all the question words, keep the max value
+	print lemma_indices
+	print lemmas
+	print question_lemmas
 	for i in lemma_indices:
 		if i in range(len(lemmas)):
 			for q_lemma in question_lemmas:
+				print word_vectors.get(str(lemmas[i]))
+				print word_vectors.get(str(q_lemma))
 				lemma_similarity[i] = max(
-					lemma_similarity[i], cosine_similarity(word_vectors[lemmas[lemma_indices]], word_vectors[q_lemma]))
+					lemma_similarity[i], cosine_similarity(word_vectors.get(str(lemmas[i])), word_vectors.get(str(q_lemma))))
 
 	return lemma_similarity
 
@@ -135,7 +152,7 @@ def deptree_path_feature(span, tokens, deptree, question_tokens, question_deptre
 	# Find similar words in sentence and question
 	for token in tokens:
 		for q_token in question_tokens:
-			if cosine_similarity(word_vectors[token], word_vectors[q_token]) > cosine_similarity_threshold:
+			if cosine_similarity(word_vectors.get(str(token)), word_vectors.get(str(q_token))) > cosine_similarity_threshold:
 				# Calculate path from the token to the span
 				deptree_path = []
 				token_index = tokens.index(token)
@@ -171,6 +188,7 @@ def parse_data(path):
 
 			# Create features for each constituent in ans_features, related to each in q_features
 			for question in q_features:
+				#curr_question_tokens = question['questions']['tokens']
 				curr_question_tokens = question['tokens']
 				curr_question_deptree = question['deps_basic']
 				curr_question_lemmas = question['lemmas']
@@ -189,23 +207,28 @@ def parse_data(path):
 						curr_deptree, curr_tokens, curr_question_deptree, curr_question_tokens)
 
 					# Features that are constituent-dependent
-					for constituent in ans_feature['constituents']:
-						constituent_length_features = length_feature(constituent, curr_tokens)
-						constituent_length_features['sentence'] = len(curr_tokens)
+					#print ans_feature['constituents']
+					for i in range(len(ans_feature['constituents'])):
+						constituents = ans_feature['constituents'][i]
+						#constituent_word_freqs = sum_tf_idf(constituents)
+						for constituent  in constituents:
+							#constituent = constituents[i]
+							constituent_length_features = length_feature(constituent, curr_tokens)
+							constituent_length_features['sentence'] = len(curr_tokens)
 
-						constituent_word_freqs = sum_tf_idf(constituent)
+							constituent_word_freqs = sum_tf_idf(constituent)							
 
-						constituent_label_feature = constituent['label'] if 'label' in constituent else 0
+							constituent_label_feature = constituent['label'] if 'label' in constituent else 0
 
-						constituent_pos_tag_feature = pos_feature(constituent, curr_pos)
+							#constituent_pos_tag_feature = pos_feature(constituent, curr_pos[i])
 
-						constituent_lemmas_feature = lemmas_feature(constituent, curr_lemmas, curr_question_lemmas)
+							constituent_lemmas_feature = lemmas_feature(constituent, curr_lemmas[i], curr_question_lemmas)
 
-						constituent_deptree_path = deptree_path_feature(
-							constituent, curr_tokens, curr_deptree, curr_question_tokens, curr_question_deptree)
+							constituent_deptree_path = deptree_path_feature(
+								constituent, curr_tokens, curr_deptree, curr_question_tokens, curr_question_deptree)
 
 """
 Read in processed data from JSON, create features, save to CSV
 """
 if __name__ == '__main__':
-	parse_data("../data/processed")
+	parse_data("../data/processed/processed_dev")
