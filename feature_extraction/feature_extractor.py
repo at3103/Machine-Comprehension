@@ -2,7 +2,6 @@ import os
 import json
 
 def parse_json(filename):
-    # print filename
     elements = []
     ext = '.json'
     i = 0
@@ -15,19 +14,18 @@ def parse_json(filename):
                 file_data = json.load(json_file)
                 d = []
                 if i == 1:
-                    for q in file_data['questions']:
-                        d.append(q.get('sentences',[]))
+                    for q in Q['questions']:
+                        print "qs"
+                        d.extend(q.get('sentences',[]))
                 else:
-                    print json_file
-                    d.append(file_data.get('sentences',[]))
-                pos = []
-                tokens = []
-                parse = []
-                constituents = []
-                deps_basic = []
-                lemmas = []
-                for sentences in d:
-                    for sentence in sentences:
+                    d = file_data.get('sentences',[])
+                    pos = []
+                    tokens = []
+                    parse = []
+                    constituents = []
+                    deps_basic = []
+                    lemmas = []
+                    for sentence in d:
                         pos.append(sentence['pos'])
                         tokens.append(sentence['tokens'])
                         parse.append(sentence['parse'])
