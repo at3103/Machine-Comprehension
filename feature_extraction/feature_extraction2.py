@@ -12,7 +12,7 @@ cosine_similarity_threshold = 0.75
 
 output_file_path = '../data/featuredata'
 # Number of files' data that is written into a single output file
-chunk_size = 10
+chunk_size = 1
 curr_file = 0
 num_files_written = 1
 
@@ -145,22 +145,34 @@ def pos_feature(span, pos):
 	pos_tags = pos[int(span['start']):int(span['end']) + 1]
 	return pos_tags
 
-def lemmas_feature(span, lemmas, question_lemmas):
-	#lemma_similarity = [0, 0, 0, 0]
-	lemma_similarity = [0]*4
-	lemma_indices = [span['start'] - 2, span['start'] - 1, span['end'] + 1, span['end'] + 2]
-	# Compute similarity of lemmas of required words with all the question words, keep the max value
-	# print lemma_indices
-	# print lemmas
-	# print question_lemmas
-	for i in lemma_indices:
-		if i in range(len(lemmas)):
-			for q_lemma in question_lemmas:
-				# print get_vector_for_word(lemmas[i])
-				# print get_vector_for_word(q_lemma)
-				lemma_similarity[lemma_indices.index(i)] = max(
-					lemma_similarity[lemma_indices.index(i)],
-					cosine_similarity(get_vector_for_word(lemmas[i]), get_vector_for_word(q_lemma)))
+def find_parent_index_in_deptree(token_index, deptree):
+	# Find the place where token_index is the third value of a deptree element (this should only happen once!)
+	for dep in deptree:
+		if int(dep[2]) == token_index:
+			# Return the index of the token that is one level above this current dependency in the deptree
+			return int(dep[1])
+
+	return -1
+
+
+def lemmas_feature(span, deptree, tokens, lemmas, question_lemmas):
+	lemma_similarity = -1
+	ancestor_lemma_tokens = set()
+	# Scan up through the dependency tree, add all token lemmas into ancestor_lemma_tokens
+	for i in range(span.get('start'), span.get('end') + 1):
+		parent_word_index = find_parent_index_in_deptree(i, deptree)
+		if parent_word_index is not -1:
+			ancestor_lemma_tokens.add(lemmas[parent_word_index])
+		# Repeat for one more level
+		grandparent_word_index = find_parent_index_in_deptree(parent_word_index, deptree)
+		if grandparent_word_index is not -1:
+			ancestor_lemma_tokens.add(lemmas[grandparent_word_index])
+
+	# Compute similarity of all the above lemmas with all the question words, keep the max value
+	for lemma in ancestor_lemma_tokens:
+		for q_lemma in question_lemmas:
+			lemma_similarity = max(lemma_similarity,
+								   cosine_similarity(get_vector_for_word(lemma), get_vector_for_word(q_lemma)))
 
 	return lemma_similarity
 
@@ -253,8 +265,9 @@ def parse_data(path):
 
 						constituent_pos_tag_feature = pos_feature(constituent, curr_pos)
 
-						constituent_lemmas_feature = lemmas_feature(constituent, curr_lemmas, curr_question_lemmas)
-						curr_features.extend(constituent_lemmas_feature)
+						constituent_lemmas_feature = lemmas_feature(
+							constituent, curr_deptree, curr_tokens, curr_lemmas, curr_question_lemmas)
+						curr_features.append(constituent_lemmas_feature)
 
 						constituent_deptree_path = deptree_path_feature(
 							constituent, curr_tokens, curr_deptree, curr_question_tokens, curr_question_deptree)
