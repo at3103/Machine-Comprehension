@@ -3,11 +3,13 @@ import json
 import math
 import operator
 from feature_extractor import *
+from collections import Counter
 import pandas
 
 word_vectors_filename = "../data/glove/glove.6B.50d.txt"
 word_vectors = {}
-tf_idf = {}
+df = {}
+N = 1
 cosine_similarity_threshold = 0.75
 
 output_file_path = '../data/featuredata'
@@ -20,14 +22,14 @@ def get_vector_for_word(word):
 	normalized_word = word.lower()
 	return word_vectors.get(normalized_word)
 
-def get_tf_idf_for_word(word):
+def get_tf_idf_for_word(word, tf):
 	normalized_word = word.lower()
-	return tf_idf.get(normalized_word) if tf_idf.get(normalized_word) is not None else 0
+	idf = N/df.get(normalized_word,1)
+	tf_idf = tf * math.log(1 + idf)
+	return tf_idf
 
 def vector_magnitude(vec):
 	magnitude = 0
-	# for val in vec:
-	# 	magnitude += val * val
 	vec = map(float,vec)
 	magnitude = sum(map(operator.mul,vec,vec))
 	magnitude = math.sqrt(magnitude)
@@ -47,9 +49,6 @@ def cosine_similarity(vec1, vec2):
 	vec2 = map(float,vec2)
 	vec1_magnitude = vector_magnitude(vec1)
 	vec2_magnitude = vector_magnitude(vec2)
-
-	# for i in range(len(vec1)):
-	# 	product += vec1[i] * vec2[i]
 	product = sum(map(operator.mul,vec1,vec2))
 	return max(-1, min(1, product / (vec1_magnitude * vec2_magnitude)))
 
@@ -120,12 +119,23 @@ def root_match_feature(deptree, tokens, question_deptree, question_tokens):
 
 	return root_match
 
-def sum_tf_idf(span):
+def sum_tf_idf(span, sent_tokens, tf, q_tokens):
 	tf_idf_sum = 0
-	for token in span['text_tokens']:
-		tf_idf_sum += get_tf_idf_for_word(token)
-
-	return tf_idf_sum
+	left = span['start']
+	right = span['end']
+	for i in range(len(sent_tokens)):
+		token = sent_tokens[i]
+		if token in q_tokens:
+			token_tf_idf = get_tf_idf_for_word(token, tf.get(token,0))
+			if i < left:
+				tf_idf_sum_left += token_tf_idf
+			elif i > right:
+				tf_idf_sum_right += token_tf_idf
+			else:
+				tf_idf_sum_in +=  token_tf_idf	
+			tf_idf_sum += token_tf_idf	
+	tf_idf_list= [tf_idf_sum, tf_idf_sum_in, tf_idf_sum_left, tf_idf_sum_right]
+	return tf_idf_list
 
 def length_feature(span, tokens):
     # Calculate different length-related features
@@ -142,8 +152,16 @@ def length_feature(span, tokens):
 
 def pos_feature(span, pos):
 	# Calculate POS tags of the constituent
+	length = int(span['end']) - int(span['start']) + 1
+	penalty = 1/length
+	score = -1
+	wh_tag
 	pos_tags = pos[int(span['start']):int(span['end']) + 1]
-	return pos_tags
+	for tag in pos_tags:
+		if tag == wh_tag:
+			wrong_tags = indexof(tag)
+			score = 1 - penalty * wrong_tags
+	return score
 
 def find_parent_index_in_deptree(token_index, deptree):
 	# Find the place where token_index is the third value of a deptree element (this should only happen once!)
@@ -193,6 +211,8 @@ def deptree_path_feature(span, tokens, deptree, question_tokens, question_deptre
 def parse_data(path):
 	# i =0
 	print "hey"
+	global idf
+	global N
 	global curr_file
 	global num_files_written
 
@@ -202,9 +222,6 @@ def parse_data(path):
 			line_list = line.split()
 			word = line_list.pop(0)
 			word_vectors[word] = line_list
-
-			# Temporarily calculating here
-			tf_idf[word] = 1
 
 	for (root, files, filenames) in os.walk(path):
 		for file in filenames:
@@ -218,6 +235,15 @@ def parse_data(path):
 			# print 'Answer_features :', ans_features, "Question_features", q_features
 			# i += 1
 
+			all_tokens = []
+			tf_list = []
+			for j in ans_features[0].get('tokens'):
+				j = map(str.lower,j)
+				tf_list.append(Counter(j))
+				all_tokens.extend(j)
+			df = Counter(all_tokens)
+			N = sum(idf.values())
+
 			# Empty list to store feature values
 			combined_features = []
 
@@ -227,12 +253,14 @@ def parse_data(path):
 				curr_question_tokens = q_features[0].get('tokens')[i]
 				curr_question_deptree = q_features[0].get('deps_basic')[i]
 				curr_question_lemmas = q_features[0].get('lemmas')[i]
+				curr_question_pos	 = q_features[0].get('pos')[i]
 				for j in range(len(ans_features[0].get('tokens'))):
 					curr_tokens = ans_features[0].get('tokens')[j]
 					curr_lemmas = ans_features[0].get('lemmas')[j]
 					curr_pos = ans_features[0].get('pos')[j]
 					curr_deptree = ans_features[0].get('deps_basic')[j]
 					curr_constituents = ans_features[0].get('constituents')[j]
+					curr_tf = tf_list[j]
 
 					# List for current features
 					curr_features = []
@@ -257,13 +285,13 @@ def parse_data(path):
 						constituent_length_features.append(len(curr_tokens))
 						curr_features.extend(constituent_length_features)
 
-						constituent_word_freqs = sum_tf_idf(constituent)
-						curr_features.append(constituent_word_freqs)
+						constituent_word_freqs = sum_tf_idf(constituent, curr_tokens, curr_tf, curr_question_tokens)
+						curr_features.extend(constituent_word_freqs)
 
 						constituent_label_feature = constituent['label'] if 'label' in constituent else 0
 						curr_features.append(constituent_label_feature)
 
-						constituent_pos_tag_feature = pos_feature(constituent, curr_pos)
+						constituent_pos_tag_feature = pos_feature(constituent, curr_pos, curr_question_pos)
 
 						constituent_lemmas_feature = lemmas_feature(
 							constituent, curr_deptree, curr_tokens, curr_lemmas, curr_question_lemmas)
