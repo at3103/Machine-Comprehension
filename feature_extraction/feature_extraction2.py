@@ -122,13 +122,16 @@ def root_match_feature(deptree, tokens, question_deptree, question_tokens):
 def sum_tf_idf(span, sent_tokens, tf, q_tokens, n=1):
 	tf_idf_sum = 0
 	sim = 0
+	span_wrd_freq = 0
 	left = span['start']
 	right = span['end']
 
 	for i in range(len(sent_tokens) - n + 1):
 		token = sent_tokens[i:i+n]
-		#if token in q_tokens:
+		token_tf_idf = get_tf_idf_for_word(token, tf.get(t,0))
+		span_wrd_freq += token_tf_idf
 		for j in range(len(q_tokens) - n +1):
+			vec_not_found = 0
 			q = q_tokens[j:j+n]
 			if q == token:
 				sim = 1
@@ -149,7 +152,7 @@ def sum_tf_idf(span, sent_tokens, tf, q_tokens, n=1):
 			if sim:
 				token_tf_idf = 0
 				for t in token:
-					token_tf_idf += get_tf_idf_for_word(token, tf.get(t,0))
+					#token_tf_idf += get_tf_idf_for_word(token, tf.get(t,0))
 				if i < left:
 					tf_idf_sum_left += token_tf_idf
 				elif i > right:
@@ -157,7 +160,7 @@ def sum_tf_idf(span, sent_tokens, tf, q_tokens, n=1):
 				else:
 					tf_idf_sum_in +=  token_tf_idf	
 				tf_idf_sum += token_tf_idf	
-	tf_idf_list= [tf_idf_sum, tf_idf_sum_in, tf_idf_sum_left, tf_idf_sum_right]
+	tf_idf_list= [tf_idf_sum, tf_idf_sum_in, tf_idf_sum_left, tf_idf_sum_right, span_wrd_freq]
 	return tf_idf_list
 
 def length_feature(span, tokens):
@@ -289,11 +292,11 @@ def parse_data(path):
 					curr_features = []
 
 					# Features that are sentence-dependent
-					matching_word_freqs = matching_word_frequencies_feature(curr_tokens, curr_question_tokens, 1)
-					curr_features.append(matching_word_freqs)
+					# matching_word_freqs = matching_word_frequencies_feature(curr_tokens, curr_question_tokens, 1)
+					# curr_features.append(matching_word_freqs)
 
-					matching_bigram_freqs = matching_word_frequencies_feature(curr_tokens, curr_question_tokens, 2)
-					curr_features.append(matching_bigram_freqs)
+					# matching_bigram_freqs = matching_word_frequencies_feature(curr_tokens, curr_question_tokens, 2)
+					# curr_features.append(matching_bigram_freqs)
 
 					root_match = root_match_feature(
 						curr_deptree, curr_tokens, curr_question_deptree, curr_question_tokens)
@@ -310,6 +313,12 @@ def parse_data(path):
 
 						constituent_word_freqs = sum_tf_idf(constituent, curr_tokens, curr_tf, curr_question_tokens)
 						curr_features.extend(constituent_word_freqs)
+
+						constituent_bigram_freqs = sum_tf_idf(constituent, curr_tokens, curr_tf, curr_question_tokens, 2)
+						curr_features.extend(constituent_bigram_freqs)						
+
+						constituent_bigram_freqs = sum_tf_idf(constituent, curr_tokens, curr_tf, curr_question_tokens, 2)
+						curr_features.extend(constituent_bigram_freqs)						
 
 						constituent_label_feature = constituent['label'] if 'label' in constituent else 0
 						curr_features.append(constituent_label_feature)
