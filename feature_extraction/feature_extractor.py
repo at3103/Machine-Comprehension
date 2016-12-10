@@ -14,25 +14,25 @@ def parse_json(filename):
                 file_data = json.load(json_file)
                 d = []
                 if i == 1:
-                    for q in Q['questions']:
+                    for q in file_data['questions']:
                         print "qs"
                         d.extend(q.get('sentences',[]))
                 else:
                     d = file_data.get('sentences',[])
-                    pos = []
-                    tokens = []
-                    parse = []
-                    constituents = []
-                    deps_basic = []
-                    lemmas = []
-                    for sentence in d:
-                        pos.append(sentence['pos'])
-                        tokens.append(sentence['tokens'])
-                        parse.append(sentence['parse'])
-                        deps_basic.append(sentence['deps_basic'])
-                        lemmas.append(sentence['lemmas'])
-                        constituents.append(sentence['constituents'])
-                    elements.append([{'pos':pos,'tokens':tokens,'parse':parse,'constituents':constituents, 'deps_basic':deps_basic, 'lemmas':lemmas}])
+                pos = []
+                tokens = []
+                parse = []
+                constituents = []
+                deps_basic = []
+                lemmas = []
+                for sentence in d:
+                    pos.append(sentence['pos'])
+                    tokens.append(sentence['tokens'])
+                    parse.append(sentence['parse'])
+                    deps_basic.append(sentence['deps_basic'])
+                    lemmas.append(sentence['lemmas'])
+                    constituents.append(sentence['constituents'])
+                elements.append([{'pos':pos,'tokens':tokens,'parse':parse,'constituents':constituents, 'deps_basic':deps_basic, 'lemmas':lemmas}])
         else:
             elements.append([])
         i += 1
