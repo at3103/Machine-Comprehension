@@ -3,11 +3,8 @@ import json
 import math
 import operator
 from feature_extractor import *
-<<<<<<< HEAD
 from collections import Counter
-=======
 import pandas
->>>>>>> 1497f96e1088e77b645897f082aad60bf3e0020f
 
 word_vectors_filename = "../data/glove/glove.6B.50d.txt"
 word_vectors = {}
