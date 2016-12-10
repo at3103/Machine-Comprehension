@@ -5,6 +5,7 @@ import operator
 from feature_extractor import *
 from collections import Counter
 import pandas
+import re
 
 word_vectors_filename = "../data/glove/glove.6B.50d.txt"
 word_vectors = {}
@@ -121,14 +122,19 @@ def root_match_feature(deptree, tokens, question_deptree, question_tokens):
 
 def sum_tf_idf(span, sent_tokens, tf, q_tokens, n=1):
 	tf_idf_sum = 0
+	tf_idf_sum_left = 0
+	tf_idf_sum_right = 0
+	tf_idf_sum_in = 0
 	sim = 0
 	span_wrd_freq = 0
 	left = span['start']
 	right = span['end']
 
 	for i in range(len(sent_tokens) - n + 1):
+		token_tf_idf = 0
 		token = sent_tokens[i:i+n]
-		token_tf_idf = get_tf_idf_for_word(token, tf.get(t,0))
+		for t in token:
+			token_tf_idf += get_tf_idf_for_word(t, tf.get(t,0))
 		span_wrd_freq += token_tf_idf
 		for j in range(len(q_tokens) - n +1):
 			vec_not_found = 0
@@ -150,9 +156,11 @@ def sum_tf_idf(span, sent_tokens, tf, q_tokens, n=1):
 					sim = [cosine_similarity(vec1, vec2) > cosine_similarity_threshold for vec1, vec2 in zip(token_vec, q_token_vec)]
 					sim = all(sim)
 			if sim:
-				token_tf_idf = 0
-				for t in token:
-					#token_tf_idf += get_tf_idf_for_word(token, tf.get(t,0))
+				tf_idf_sum_left = 0
+				tf_idf_sum_right = 0
+				tf_idf_sum_in = 0
+				# for t in token:
+				# 	token_tf_idf += get_tf_idf_for_word(token, tf.get(t,0))
 				if i < left:
 					tf_idf_sum_left += token_tf_idf
 				elif i > right:
@@ -176,16 +184,26 @@ def length_feature(span, tokens):
 
     return features
 
-def pos_feature(span, pos):
+def pos_feature(span, pos, q_pos):
 	# Calculate POS tags of the constituent
 	length = int(span['end']) - int(span['start']) + 1
 	penalty = 1/length
 	score = -1
-	wh_tag
+	
+	pos_dict = {'WDT' : ['D'],
+				'WP' : ['N','P'],
+				'WP$': ['PRP$'],
+				'WRB': ['R','C']}
+
+	for pos_qs in q_pos:
+		if re.match('W', pos_qs):
+			wh_tag = pos_qs#re.split('W',)
+			break
+	
 	pos_tags = pos[int(span['start']):int(span['end']) + 1]
-	for tag in pos_tags:
-		if tag == wh_tag:
-			wrong_tags = indexof(tag)
+	for tag in pos_tags: 
+		if tag[0] in pos_dict.get(wh_tag,[]) or tag in pos_dict.get(wh_tag,[]):
+			wrong_tags = pos_tags.index(tag)
 			score = 1 - penalty * wrong_tags
 	return score
 
@@ -235,7 +253,7 @@ def deptree_path_feature(span, tokens, deptree, question_tokens, question_deptre
 	return deptree_paths
 
 def parse_data(path):
-	# i =0
+	i =0
 	print "hey"
 	global idf
 	global N
@@ -251,24 +269,24 @@ def parse_data(path):
 
 	for (root, files, filenames) in os.walk(path):
 		for file in filenames:
-			# if (i == 2):
-			# 	break
+			if (i == 2):
+				break
 			file = os.path.splitext(file)[0]
 			if file.find('_q') >= 0:
 				print file
 				continue
 			ans_features, q_features = parse_json(os.path.join(root, file))
 			# print 'Answer_features :', ans_features, "Question_features", q_features
-			# i += 1
+			i += 1
 
 			all_tokens = []
 			tf_list = []
 			for j in ans_features[0].get('tokens'):
-				j = map(str.lower,j)
+				j = map(unicode.lower,j)
 				tf_list.append(Counter(j))
 				all_tokens.extend(j)
 			df = Counter(all_tokens)
-			N = sum(idf.values())
+			N = sum(df.values())
 
 			# Empty list to store feature values
 			combined_features = []
@@ -315,15 +333,13 @@ def parse_data(path):
 						curr_features.extend(constituent_word_freqs)
 
 						constituent_bigram_freqs = sum_tf_idf(constituent, curr_tokens, curr_tf, curr_question_tokens, 2)
-						curr_features.extend(constituent_bigram_freqs)						
-
-						constituent_bigram_freqs = sum_tf_idf(constituent, curr_tokens, curr_tf, curr_question_tokens, 2)
-						curr_features.extend(constituent_bigram_freqs)						
+						curr_features.extend(constituent_bigram_freqs[:-1])											
 
 						constituent_label_feature = constituent['label'] if 'label' in constituent else 0
 						curr_features.append(constituent_label_feature)
 
 						constituent_pos_tag_feature = pos_feature(constituent, curr_pos, curr_question_pos)
+						curr_features.append(constituent_pos_tag_feature)
 
 						constituent_lemmas_feature = lemmas_feature(
 							constituent, curr_deptree, curr_tokens, curr_lemmas, curr_question_lemmas)
