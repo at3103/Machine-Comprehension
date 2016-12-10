@@ -3,13 +3,23 @@ import json
 import math
 import operator
 from feature_extractor import *
+<<<<<<< HEAD
 from collections import Counter
+=======
+import pandas
+>>>>>>> 1497f96e1088e77b645897f082aad60bf3e0020f
 
 word_vectors_filename = "../data/glove/glove.6B.50d.txt"
 word_vectors = {}
 df = {}
 N = 1
 cosine_similarity_threshold = 0.75
+
+output_file_path = '../data/featuredata'
+# Number of files' data that is written into a single output file
+chunk_size = 10
+curr_file = 0
+num_files_written = 1
 
 def get_vector_for_word(word):
 	normalized_word = word.lower()
@@ -32,7 +42,7 @@ def cosine_similarity(vec1, vec2):
 	if vec1 is None or vec2 is None:
 		return 0
 
-	print vec1,vec2
+	# print vec1,vec2
 	if(len(vec1) != len(vec2)):
 		print("Vectors not of same length!")
 		return 0
@@ -56,9 +66,9 @@ def matching_word_frequencies_feature(tokens, q_tokens, n):
 			curr_q_ngram = q_tokens[j : j + n]
 			# Check similarity by seeing if the normalised inner product of the two associated word vectors is close to 1
 			token_vec = [get_vector_for_word(token) for token in curr_ngram]
-			print token_vec
+			# print token_vec
 			q_token_vec = [get_vector_for_word(token) for token in curr_q_ngram]
-			print q_token_vec
+			# print q_token_vec
 			if None in token_vec or None in q_token_vec:
 				vec_not_found += 1
 			elif not token_vec or not q_token_vec:
@@ -74,7 +84,7 @@ def matching_word_frequencies_feature(tokens, q_tokens, n):
 	return tf_idf_sum
 
 def root_match_feature(deptree, tokens, question_deptree, question_tokens):
-	root_match = {}
+	root_match = []
 	deptree_root_token = None
 	question_deptree_root_token = None
 
@@ -89,25 +99,25 @@ def root_match_feature(deptree, tokens, question_deptree, question_tokens):
 			question_deptree_root_token = question_tokens[dep[2]]
 			break
 
-	root_match['similar_roots'] = (cosine_similarity(
+	root_match.append(cosine_similarity(
 		get_vector_for_word(deptree_root_token), get_vector_for_word(question_deptree_root_token)) >=
 								   cosine_similarity_threshold)
 
 	# Find if the sentence contains the root of the dependency parse tree of the question
-	root_match['question_in_dep'] = False
+	root_match.append(False)
 	for token in tokens:
 		if (cosine_similarity(
 				get_vector_for_word(token), get_vector_for_word(question_deptree_root_token)) >=
 				cosine_similarity_threshold):
-			root_match['question_in_dep'] = True
+			root_match[1] = True
 			break
 
 	# Find if the question contains the root of the dependency parse tree of the sentence
-	root_match['sentence_in_dep'] = False
+	root_match.append(False)
 	for token in question_tokens:
 		if (cosine_similarity(
 				get_vector_for_word(token), get_vector_for_word(deptree_root_token)) >= cosine_similarity_threshold):
-			root_match['sentence_in_dep'] = True
+			root_match[2] = True
 			break
 
 	return root_match
@@ -127,17 +137,19 @@ def sum_tf_idf(span, sent_tokens, tf, q_tokens):
 			else:
 				tf_idf_sum_in +=  token_tf_idf	
 			tf_idf_sum += token_tf_idf	
-
-	return tf_idf_sum, tf_idf_sum_in, tf_idf_sum_left, tf_idf_sum_right
+	tf_idf_list= [tf_idf_sum, tf_idf_sum_in, tf_idf_sum_left, tf_idf_sum_right]
+	return tf_idf_list
 
 def length_feature(span, tokens):
     # Calculate different length-related features
-    features = {
+    features = [
         # Num words to the left
-        'left': span['start'],
-        'right': len(tokens) - span['end'] - 1,
-        'inside': len(span['text'].split())
-    }
+        span['start'],
+		# Num words to the right
+        len(tokens) - span['end'] - 1,
+		# Num words in the span
+        len(span['text'].split())
+    ]
 
     return features
 
@@ -159,9 +171,9 @@ def lemmas_feature(span, lemmas, question_lemmas):
 	lemma_similarity = [0]*4
 	lemma_indices = [span['start'] - 2, span['start'] - 1, span['end'] + 1, span['end'] + 2]
 	# Compute similarity of lemmas of required words with all the question words, keep the max value
-	print lemma_indices
-	print lemmas
-	print question_lemmas
+	# print lemma_indices
+	# print lemmas
+	# print question_lemmas
 	for i in lemma_indices:
 		if i in range(len(lemmas)):
 			for q_lemma in question_lemmas:
@@ -192,7 +204,8 @@ def parse_data(path):
 	print "hey"
 	global idf
 	global N
-
+	global curr_file
+	global num_files_written
 
 	# Read in word vectors
 	with open(word_vectors_filename) as f:
@@ -206,12 +219,13 @@ def parse_data(path):
 			# if (i == 2):
 			# 	break
 			file = os.path.splitext(file)[0]
-			if file.find('_q') == 0:
+			if file.find('_q') >= 0:
 				print file
 				continue
 			ans_features, q_features = parse_json(os.path.join(root, file))
 			# print 'Answer_features :', ans_features, "Question_features", q_features
 			# i += 1
+
 			all_tokens = []
 			tf_list = []
 			for j in ans_features[0].get('tokens'):
@@ -220,6 +234,10 @@ def parse_data(path):
 				all_tokens.extend(j)
 			df = Counter(all_tokens)
 			N = sum(idf.values())
+
+			# Empty list to store feature values
+			combined_features = []
+
 			# Create features for each constituent in ans_features, related to each in q_features
 			for i in range(len(q_features[0].get('tokens'))):
 				#curr_question_tokens = question['questions']['tokens']
@@ -235,13 +253,19 @@ def parse_data(path):
 					curr_constituents = ans_features[0].get('constituents')[j]
 					curr_tf = tf_list[j]
 
+					# List for current features
+					curr_features = []
+
 					# Features that are sentence-dependent
 					matching_word_freqs = matching_word_frequencies_feature(curr_tokens, curr_question_tokens, 1)
+					curr_features.append(matching_word_freqs)
 
 					matching_bigram_freqs = matching_word_frequencies_feature(curr_tokens, curr_question_tokens, 2)
+					curr_features.append(matching_bigram_freqs)
 
 					root_match = root_match_feature(
 						curr_deptree, curr_tokens, curr_question_deptree, curr_question_tokens)
+					curr_features.extend(root_match)
 
 					# Features that are constituent-dependent
 					#print ans_feature['constituents']
@@ -249,20 +273,39 @@ def parse_data(path):
 					for constituent  in curr_constituents:
 						#constituent = constituents[i]
 						constituent_length_features = length_feature(constituent, curr_tokens)
-						constituent_length_features['sentence'] = len(curr_tokens)
+						constituent_length_features.append(len(curr_tokens))
+						curr_features.extend(constituent_length_features)
 
-						constituent_word_freqs_in_sent, constituent_word_freqs_in_span,\
-						 constituent_word_freqs_left_span, constituent_word_freqs_right_span\
-						  = sum_tf_idf(constituent, curr_tokens, curr_tf, curr_question_tokens)
+						constituent_word_freqs = sum_tf_idf(constituent, curr_tokens, curr_tf, curr_question_tokens)
+						curr_features.extend(constituent_word_freqs)
 
 						constituent_label_feature = constituent['label'] if 'label' in constituent else 0
+						curr_features.append(constituent_label_feature)
 
 						constituent_pos_tag_feature = pos_feature(constituent, curr_pos, curr_question_pos)
 
 						constituent_lemmas_feature = lemmas_feature(constituent, curr_lemmas, curr_question_lemmas)
+						curr_features.extend(constituent_lemmas_feature)
 
 						constituent_deptree_path = deptree_path_feature(
 							constituent, curr_tokens, curr_deptree, curr_question_tokens, curr_question_deptree)
+
+						combined_features.append(curr_features[:])
+						del curr_features[5:]
+			if curr_file == chunk_size:
+				# Write to file
+				print('Writing!')
+
+				df = pandas.DataFrame.from_records(combined_features)
+				if not os.path.exists(output_file_path):
+					os.makedirs(output_file_path)
+				df.to_csv(os.path.join(output_file_path, str(num_files_written) + '.csv'))
+
+				# Reset
+				combined_features = []
+				curr_file = 0
+				num_files_written += 1
+			curr_file += 1
 
 """
 Read in processed data from JSON, create features, save to CSV
