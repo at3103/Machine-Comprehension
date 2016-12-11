@@ -10,7 +10,7 @@ import re
 word_vectors_filename = "../data/glove/glove.6B.50d.txt"
 word_vectors = {}
 df = {}
-N = 1
+N = 0
 cosine_similarity_threshold = 0.75
 
 output_file_path = '../data/featuredata'
@@ -24,9 +24,14 @@ def get_vector_for_word(word):
 	return word_vectors.get(normalized_word)
 
 def get_tf_idf_for_word(word, tf):
+	idf = 0
 	normalized_word = word.lower()
-	idf = N/df.get(normalized_word,1)
+	df_cur = df.get(normalized_word,0) 
+	print N
+	if df_cur:
+		idf = N/df_cur
 	tf_idf = tf * math.log(1 + idf)
+	print tf_idf
 	return tf_idf
 
 def vector_magnitude(vec):
@@ -153,12 +158,12 @@ def sum_tf_idf(span, sent_tokens, tf, q_tokens, n=1):
 				elif not token_vec or not q_token_vec:
 					vec_not_found += 1
 				else:
-					sim = [cosine_similarity(vec1, vec2) > cosine_similarity_threshold for vec1, vec2 in zip(token_vec, q_token_vec)]
+					sim = [cosine_similarity(vec1, vec2) > 0.85 for vec1, vec2 in zip(token_vec, q_token_vec)]
 					sim = all(sim)
 			if sim:
-				tf_idf_sum_left = 0
-				tf_idf_sum_right = 0
-				tf_idf_sum_in = 0
+				# tf_idf_sum_left = 0
+				# tf_idf_sum_right = 0
+				# tf_idf_sum_in = 0
 				# for t in token:
 				# 	token_tf_idf += get_tf_idf_for_word(token, tf.get(t,0))
 				if i < left:
@@ -168,6 +173,7 @@ def sum_tf_idf(span, sent_tokens, tf, q_tokens, n=1):
 				else:
 					tf_idf_sum_in +=  token_tf_idf	
 				tf_idf_sum += token_tf_idf	
+				break
 	tf_idf_list= [tf_idf_sum, tf_idf_sum_in, tf_idf_sum_left, tf_idf_sum_right, span_wrd_freq]
 	return tf_idf_list
 
@@ -184,27 +190,30 @@ def length_feature(span, tokens):
 
     return features
 
-def pos_feature(span, pos, q_pos):
+def pos_feature(span, pos, q_pos, sent_length):
 	# Calculate POS tags of the constituent
 	length = int(span['end']) - int(span['start']) + 1
-	penalty = 1/length
-	score = -1
+	penalty = 1.0/length
+	score = 0.0
 	
-	pos_dict = {'WDT' : ['D'],
-				'WP' : ['N','P'],
+	pos_dict = {'WDT' : ['DT'],
+				'WP' : ['NN','NNP', 'NNPS', 'NNS'],
 				'WP$': ['PRP$'],
-				'WRB': ['R','C']}
+				'WRB': ['RB','RBR','RBS','CD']}
 
 	for pos_qs in q_pos:
 		if re.match('W', pos_qs):
 			wh_tag = pos_qs#re.split('W',)
 			break
-	
+	#tag[0] in pos_dict.get(wh_tag,[]) or 
 	pos_tags = pos[int(span['start']):int(span['end']) + 1]
 	for tag in pos_tags: 
-		if tag[0] in pos_dict.get(wh_tag,[]) or tag in pos_dict.get(wh_tag,[]):
+		if tag in pos_dict.get(wh_tag,[]):
 			wrong_tags = pos_tags.index(tag)
-			score = 1 - penalty * wrong_tags
+			score += 1 - float(penalty * wrong_tags)
+		else:
+			score -= penalty
+		score /=length
 	return score
 
 def find_parent_index_in_deptree(token_index, deptree):
@@ -255,7 +264,7 @@ def deptree_path_feature(span, tokens, deptree, question_tokens, question_deptre
 def parse_data(path):
 	i =0
 	print "hey"
-	global idf
+	global df
 	global N
 	global curr_file
 	global num_files_written
@@ -281,12 +290,14 @@ def parse_data(path):
 
 			all_tokens = []
 			tf_list = []
+			N = 0
 			for j in ans_features[0].get('tokens'):
 				j = map(unicode.lower,j)
 				tf_list.append(Counter(j))
-				all_tokens.extend(j)
+				all_tokens.extend(set(j))
+				N += 1
 			df = Counter(all_tokens)
-			N = sum(df.values())
+			
 
 			# Empty list to store feature values
 			combined_features = []
@@ -310,11 +321,6 @@ def parse_data(path):
 					curr_features = []
 
 					# Features that are sentence-dependent
-					# matching_word_freqs = matching_word_frequencies_feature(curr_tokens, curr_question_tokens, 1)
-					# curr_features.append(matching_word_freqs)
-
-					# matching_bigram_freqs = matching_word_frequencies_feature(curr_tokens, curr_question_tokens, 2)
-					# curr_features.append(matching_bigram_freqs)
 
 					root_match = root_match_feature(
 						curr_deptree, curr_tokens, curr_question_deptree, curr_question_tokens)
@@ -338,7 +344,7 @@ def parse_data(path):
 						constituent_label_feature = constituent['label'] if 'label' in constituent else 0
 						curr_features.append(constituent_label_feature)
 
-						constituent_pos_tag_feature = pos_feature(constituent, curr_pos, curr_question_pos)
+						constituent_pos_tag_feature = pos_feature(constituent, curr_pos, curr_question_pos, len(curr_tokens))
 						curr_features.append(constituent_pos_tag_feature)
 
 						constituent_lemmas_feature = lemmas_feature(
@@ -349,7 +355,7 @@ def parse_data(path):
 							constituent, curr_tokens, curr_deptree, curr_question_tokens, curr_question_deptree)
 
 						combined_features.append(curr_features[:])
-						del curr_features[5:]
+						del curr_features[3:]
 			if curr_file == chunk_size:
 				# Write to file
 				print('Writing!')
