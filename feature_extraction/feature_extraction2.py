@@ -58,34 +58,6 @@ def cosine_similarity(vec1, vec2):
 	product = sum(map(operator.mul,vec1,vec2))
 	return max(-1, min(1, product / (vec1_magnitude * vec2_magnitude)))
 
-# def matching_word_frequencies_feature(tokens, q_tokens, n):
-# 	tf_idf_sum = 0
-# 	vec_not_found = 0
-
-# 	# Find if the token is similar enough to a token in the question, add its tf_idf
-# 	for i in range(len(tokens) - n ):
-# 		curr_ngram = tokens[i : i + n]
-# 		for j in range(len(q_tokens) - n):
-# 			curr_q_ngram = q_tokens[j : j + n]
-# 			# Check similarity by seeing if the normalised inner product of the two associated word vectors is close to 1
-# 			token_vec = [get_vector_for_word(token) for token in curr_ngram]
-# 			# print token_vec
-# 			q_token_vec = [get_vector_for_word(token) for token in curr_q_ngram]
-# 			# print q_token_vec
-# 			if None in token_vec or None in q_token_vec:
-# 				vec_not_found += 1
-# 			elif not token_vec or not q_token_vec:
-# 				vec_not_found += 1
-# 			else:
-# 				similarity = [cosine_similarity(vec1, vec2) for vec1, vec2 in zip(token_vec, q_token_vec)]
-# 				# similarity = cosine_similarity(token_vec, q_token_vec)# for vec1, vec2 in zip(token_vec, q_token_vec)]
-# 				if all(s >= cosine_similarity_threshold for s in similarity):
-# 					# tf_idf_sum = map(sum,tf_idf_sum,tf_idf[])
-# 					for word in curr_ngram:
-# 						tf_idf_sum += get_tf_idf_for_word(word)
-
-# 	return tf_idf_sum
-
 def root_match_feature(deptree, tokens, question_deptree, question_tokens):
 	root_match = []
 	deptree_root_token = None
@@ -140,7 +112,8 @@ def sum_tf_idf(span, sent_tokens, tf, q_tokens, n=1):
 		token = sent_tokens[i:i+n]
 		for t in token:
 			token_tf_idf += get_tf_idf_for_word(t, tf.get(t,0))
-		span_wrd_freq += token_tf_idf
+		if i >= left and i <= right:
+			span_wrd_freq += token_tf_idf
 		for j in range(len(q_tokens) - n +1):
 			vec_not_found = 0
 			q = q_tokens[j:j+n]
@@ -161,11 +134,6 @@ def sum_tf_idf(span, sent_tokens, tf, q_tokens, n=1):
 					sim = [cosine_similarity(vec1, vec2) > 0.85 for vec1, vec2 in zip(token_vec, q_token_vec)]
 					sim = all(sim)
 			if sim:
-				# tf_idf_sum_left = 0
-				# tf_idf_sum_right = 0
-				# tf_idf_sum_in = 0
-				# for t in token:
-				# 	token_tf_idf += get_tf_idf_for_word(token, tf.get(t,0))
 				if i < left:
 					tf_idf_sum_left += token_tf_idf
 				elif i > right:
