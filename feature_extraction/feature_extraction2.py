@@ -108,6 +108,7 @@ def sum_tf_idf(span, sent_tokens, tf, q_tokens, n=1):
 		token_tf_idf = 0
 		token = sent_tokens[i:i+n]
 		for t in token:
+			t = t.lower()
 			token_tf_idf += get_tf_idf_for_word(t, tf.get(t,0))
 		if i >= left and i <= right:
 			span_wrd_freq += token_tf_idf
@@ -293,6 +294,10 @@ def parse_data(path):
 						
 						constituent_answer = 'N'
 
+						#span_words = ' '.join(curr_tokens[span['start']:span['end']])
+						span_words = constituent['text']
+						curr_features.append(span_words)
+
 						constituent_length_features = length_feature(constituent, curr_tokens)
 						constituent_length_features.append(len(curr_tokens))
 						curr_features.extend(constituent_length_features)
@@ -316,8 +321,6 @@ def parse_data(path):
 						constituent_deptree_path = deptree_path_feature(
 							constituent, curr_tokens, curr_deptree, curr_question_tokens, curr_question_deptree)
 
-						span_words = ' '.join(curr_tokens)
-
 						if span_words in curr_question_g_truth:
 							constituent_answer = 'Y'
 						curr_features.append(constituent_answer)
@@ -328,7 +331,7 @@ def parse_data(path):
 			if curr_file == chunk_size:
 				# Write to file
 				print('Writing!')
-				features = ['root match 1', 'sent_root_qs', 'qs_root_sent', 'n_wrds_l', 'n_wrds_r', 
+				features = ['root match 1', 'sent_root_qs', 'qs_root_sent', 'span_words', 'n_wrds_l', 'n_wrds_r', 
 				'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf', 
 				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent', 'pos', 'lemma', 'Answer' ]
 				df = pandas.DataFrame.from_records(combined_features, columns = features)
