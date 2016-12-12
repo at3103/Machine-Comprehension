@@ -471,15 +471,23 @@ def parse_data(path):
 
 	# Empty list to store feature values
 	combined_features = []
-
+	written_files_path = "../data/featuredata/written_files.txt"
+	written_files = []
+	if os.path.isfile(written_files_path): 
+		with open(written_files_path) as f:
+			written_files = f.read().splitlines()
+	
 	for (root, files, filenames) in os.walk(path):
-
+			
 		for file in filenames:
-			if (i == 100):
-				break
+			# if (i == 100):
+			# 	break
+			if file in written_files:
+				continue
 			file = os.path.splitext(file)[0]
 			if file.find('_q') >= 0:
 				continue
+			print "Processing {0}".format(file)
 			ans_features, q_features = parse_json(os.path.join(root, file))
 			i += 1
 
@@ -492,9 +500,7 @@ def parse_data(path):
 				all_tokens.extend(set(j))
 				N += 1
 			df = Counter(all_tokens)
-			
-
-
+			written_files.append(file)
 			# Create features for each constituent in ans_features, related to each in q_features
 			for i in range(len(q_features[0].get('tokens',[]))):
 				curr_question_g_truth = []
@@ -620,10 +626,18 @@ def parse_data(path):
 				combined_features = []
 				curr_file = 0
 				num_files_written += 1
+				#append to written files and reset
+				with open(written_files_path,'a') as writing_file:
+					for w_file in written_files:
+						writing_file.write(w_file)
+						writing_file.write("\n")
+				written_files = []
+				
 			curr_file += 1
 
+	print "All done"
 """
 Read in processed data from JSON, create features, save to CSV
 """
 if __name__ == '__main__':
-	parse_data("../data/processed/processed_dev")
+	parse_data("../data/processed/processed_train")
