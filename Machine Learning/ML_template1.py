@@ -28,7 +28,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 #To check the version of python
 #print "Python : {}".format(sys.version)
-
+	
 # Load dataset
 frames = []
 for i in range(100):
@@ -38,7 +38,7 @@ for i in range(100):
 	frames.append(dataset)
 	final_dataset = pd.concat(frames)
 
-
+	
 
 
 #Different buil-in functions of ndarray
