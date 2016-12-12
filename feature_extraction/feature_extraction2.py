@@ -6,6 +6,7 @@ from feature_extractor import *
 from collections import Counter
 import pandas
 import re
+import string
 import networkx
 
 word_vectors_filename = "../data/glove/glove.6B.50d.txt"
@@ -18,7 +19,7 @@ stanford_deps_hierarchy = networkx.DiGraph()
 
 output_file_path = '../data/featuredata'
 # Number of files' data that is written into a single output file
-chunk_size = 10
+chunk_size = 1
 curr_file = 1
 num_files_written = 1
 
@@ -117,6 +118,23 @@ def init_deps_hierarchy():
 	stanford_deps_hierarchy.add_edge('npadvmod', 'tmod')
 
 	stanford_deps_hierarchy.add_edge('sdep', 'xsubj')
+
+def normalize_answer(s):
+    """Lower text and remove punctuation, articles and extra whitespace."""
+    def remove_articles(text):
+        return re.sub(r'\b(a|an|the)\b', ' ', text)
+
+    def white_space_fix(text):
+        return ' '.join(text.split())
+
+    def remove_punc(text):
+        exclude = set(string.punctuation)
+        return ''.join(ch for ch in text if ch not in exclude)
+
+    def lower(text):
+        return text.lower()
+
+    return white_space_fix(remove_articles(remove_punc(lower(s))))
 
 def get_vector_for_word(word):
 	normalized_word = word.lower()
@@ -380,7 +398,11 @@ def parse_data(path):
 	# Initialize the dependencies hierarchy, as given in the Stanford Dependencies Manual
 	init_deps_hierarchy()
 
+	# Empty list to store feature values
+	combined_features = []
+
 	for (root, files, filenames) in os.walk(path):
+
 		for file in filenames:
 			if (i == 100):
 				break
@@ -401,8 +423,6 @@ def parse_data(path):
 			df = Counter(all_tokens)
 			
 
-			# Empty list to store feature values
-			combined_features = []
 
 			# Create features for each constituent in ans_features, related to each in q_features
 			for i in range(len(q_features[0].get('tokens',[]))):
@@ -461,7 +481,7 @@ def parse_data(path):
 						constituent_answer = 'N'
 
 						#span_words = ' '.join(curr_tokens[span['start']:span['end']])
-						span_words = constituent['text']
+						span_words = normalize_answer(constituent['text'])
 						
 
 						constituent_length_features = length_feature(constituent, curr_tokens)
@@ -484,30 +504,30 @@ def parse_data(path):
 							constituent, curr_deptree, curr_tokens, curr_lemmas, curr_question_lemmas)
 						curr_features.append(constituent_lemmas_feature)
 
-						constituent_deptree_path = deptree_path_scaling * deptree_path_feature(
-							constituent, curr_tokens, curr_graph, curr_pos, curr_question_tokens, curr_question_graph,
-							curr_question_pos, curr_question_wh_word_loc)
-						curr_features.append(constituent_deptree_path)
-
-						if span_words.strip() in curr_question_g_truth:
+						# constituent_deptree_path = deptree_path_scaling * deptree_path_feature(
+						# 	constituent, curr_tokens, curr_graph, curr_pos, curr_question_tokens, curr_question_graph,
+						# 	curr_question_pos, curr_question_wh_word_loc)
+						# curr_features.append(constituent_deptree_path)
+						curr_question_g_truth = map(normalize_answer,curr_question_g_truth)
+						if span_words in curr_question_g_truth:
 							constituent_answer = 'Y'
 						curr_features.append(constituent_answer)
 
 						#span words
-						curr_features.append(span_words)
+						curr_features.append(span_words.encode('ascii','ignore'))
 						#qs
 						curr_features.append(' '.join(curr_question_tokens))
 						#ground truth
 						curr_features.append(curr_question_g_truth)
 						combined_features.append(curr_features[:])
 						del curr_features[3:]
-
+					print "Done with qs"				
 			if curr_file == chunk_size:
 				# Write to file
 				print('Writing!')
 				features = ['root match 1', 'sent_root_qs', 'qs_root_sent',  'n_wrds_l', 'n_wrds_r', 
 				'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf', 
-				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent', 'pos', 'lemma', 'dep_path_similarity', 'Answer', 
+				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'pos', 'lemma', 'Answer', 
 				'span_words', 'q_words', 'ground_truth' ]
 
 				df = pandas.DataFrame.from_records(combined_features, columns = features)

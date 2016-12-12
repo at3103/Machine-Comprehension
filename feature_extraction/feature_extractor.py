@@ -39,7 +39,7 @@ def parse_json(filename):
                     parse.append(sentence.get('parse',[]))
                     deps_basic.append(sentence.get('deps_basic',[]))
                     lemmas.append(sentence.get('lemmas',[]))
-                    constituents.append(sentence.get('spans',[]))
+                    constituents.append(sentence.get('constituents',[]))
                     if i:
                         g_truths.append(gr_truths[j])
                 elements.append([{'pos':pos,'tokens':tokens,'parse':parse,'constituents':constituents, 'deps_basic':deps_basic, 'lemmas':lemmas, 'ground_truth':g_truths}])
