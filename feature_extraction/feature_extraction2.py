@@ -136,6 +136,30 @@ def normalize_answer(s):
 
     return white_space_fix(remove_articles(remove_punc(lower(s))))
 
+def f1_score(prediction, ground_truth):
+    prediction_tokens = normalize_answer(prediction).split()
+    ground_truth_tokens = normalize_answer(ground_truth).split()
+    common = Counter(prediction_tokens) & Counter(ground_truth_tokens)
+    num_same = sum(common.values())
+    if num_same == 0:
+        return 0
+    precision = 1.0 * num_same / len(prediction_tokens)
+    recall = 1.0 * num_same / len(ground_truth_tokens)
+    f1 = (2 * precision * recall) / (precision + recall)
+    return f1
+
+
+def exact_match_score(prediction, ground_truth):
+    return (normalize_answer(prediction) == normalize_answer(ground_truth))
+
+
+def metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
+    scores_for_ground_truths = []
+    for ground_truth in ground_truths:
+        score = metric_fn(prediction, ground_truth)
+        scores_for_ground_truths.append(score)
+    return max(scores_for_ground_truths)
+
 def get_vector_for_word(word):
 	normalized_word = word.lower()
 	return word_vectors.get(normalized_word)
@@ -433,6 +457,7 @@ def parse_data(path):
 				curr_question_lemmas = q_features[0].get('lemmas',[])[i]
 				curr_question_pos	 = q_features[0].get('pos',[])[i]
 				curr_question_g_truth = q_features[0].get('ground_truth',[])[i]
+				qid = q_features[0].get('id','')[i]
 
 				# Construct networkx graph from the deptree for the question
 				curr_question_graph = networkx.Graph()
@@ -508,26 +533,30 @@ def parse_data(path):
 						# 	constituent, curr_tokens, curr_graph, curr_pos, curr_question_tokens, curr_question_graph,
 						# 	curr_question_pos, curr_question_wh_word_loc)
 						# curr_features.append(constituent_deptree_path)
-						curr_question_g_truth = map(normalize_answer,curr_question_g_truth)
-						if span_words in curr_question_g_truth:
-							constituent_answer = 'Y'
-						curr_features.append(constituent_answer)
+						# curr_question_g_truth = map(normalize_answer,curr_question_g_truth)
+						# if span_words in curr_question_g_truth:
+						# 	constituent_answer = 'Y'
+						
+						F1_const_score = metric_max_over_ground_truths(f1_score, span_words, curr_question_g_truth)
+
+						curr_features.append(F1_const_score)
 
 						#span words
 						curr_features.append(span_words.encode('ascii','ignore'))
 						#qs
-						curr_features.append(' '.join(curr_question_tokens))
+						#curr_features.append(' '.join(curr_question_tokens))
+						curr_features.append(qid)
 						#ground truth
 						curr_features.append(curr_question_g_truth)
 						combined_features.append(curr_features[:])
 						del curr_features[3:]
-					print "Done with qs"				
+				print "Done with qs"				
 			if curr_file == chunk_size:
 				# Write to file
 				print('Writing!')
 				features = ['root match 1', 'sent_root_qs', 'qs_root_sent',  'n_wrds_l', 'n_wrds_r', 
 				'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf', 
-				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'pos', 'lemma', 'Answer', 
+				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'pos', 'lemma', 'F1_score', 
 				'span_words', 'q_words', 'ground_truth' ]
 
 				df = pandas.DataFrame.from_records(combined_features, columns = features)
