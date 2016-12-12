@@ -4,6 +4,22 @@ import os
 import json
 import sys
 import io
+import argparse
+
+def cli():
+    formatter = argparse.ArgumentDefaultsHelpFormatter
+    parser = argparse.ArgumentParser(formatter_class=formatter)
+
+    parser.add_argument(
+        'dataset',
+        type=str,
+        help='Provide dataset name to be processed')
+
+    args = parser.parse_args()
+    return args.dataset
+
+dataset = cli()
+
 
 EMCount = 0
 QCount = 0
@@ -40,7 +56,6 @@ def contextParser(story_id,text,dataset):
 	
 	
 if __name__ == '__main__':
-	dataset = "train"
 	directory = "data"
 	all_stories = process(dir=directory,dataset=dataset)
 	questionCount = 0

@@ -40,7 +40,7 @@ p = CoreNLP(configdict={
 		    corenlp_jars=[dir_path+"/corenlp/*", dir_path+"/corenlp/stanford-english-corenlp-2016-10-31-models.jar"])
 
 stopWords = set(nltk.corpus.stopwords.words('english'))
-specialChar = set(['?',',','.',';','!','-'])
+specialChar = set(['?',',','.',';','!','-','-LRB-','-RRB'])
 stopWords.update(specialChar)
 
 def getScores(story_id,passage,questionlist):

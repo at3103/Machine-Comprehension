@@ -34,18 +34,22 @@ def questionParser(story_id,questionlist,dataset):
 		SRParsed['id'] = q.properties['id']
 		sentences = SRParsed.get("sentences")
 		for sentence in sentences:
-			del sentence["char_offsets"] 
+			del sentence["char_offsets"]
+		SRParsed['answers'] = []
+		for ground_truth in q.options:
+			AnswerParsed = p.parse_doc(ground_truth['text'])
+			SRParsed['answers'].append(AnswerParsed.get("sentences")[0].get("tokens"))
 		SRParsedAllQ["questions"].append(SRParsed)
 	with io.FileIO(outputFilePath, "w") as file:
 		json.dump(SRParsedAllQ,file)
 	
 	
 if __name__ == '__main__':
-	dataset = "train"
+	dataset = "dev"
 	directory = "data"
 
 	all_stories = process(dir=directory,dataset=dataset)
 	questionCount = 0
-	for i,story in enumerate(all_stories):
+	for i,story in enumerate(all_stories[:1]):
 		questionCount+=len(story.questionlist)
 		questionParser(story.story_id,story.questionlist,dataset=dataset)
