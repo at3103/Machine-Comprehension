@@ -15,8 +15,8 @@ cosine_similarity_threshold = 0.75
 
 output_file_path = '../data/featuredata'
 # Number of files' data that is written into a single output file
-chunk_size = 1
-curr_file = 0
+chunk_size = 10
+curr_file = 1
 num_files_written = 1
 
 def get_vector_for_word(word):
@@ -160,7 +160,7 @@ def pos_feature(span, pos, q_pos, sent_length):
 	length = int(span['end']) - int(span['start']) + 1
 	penalty = 1.0/length
 	score = 0.0
-	
+	wh_tag =''
 	pos_dict = {'WDT' : ['DT'],
 				'WP' : ['NN','NNP', 'NNPS', 'NNS'],
 				'WP$': ['PRP$'],
@@ -170,6 +170,8 @@ def pos_feature(span, pos, q_pos, sent_length):
 		if re.match('W', pos_qs):
 			wh_tag = pos_qs#re.split('W',)
 			break
+	if wh_tag == '':
+		print span['text'], q_pos
 	#tag[0] in pos_dict.get(wh_tag,[]) or 
 	pos_tags = pos[int(span['start']):int(span['end']) + 1]
 	for tag in pos_tags: 
@@ -227,7 +229,7 @@ def deptree_path_feature(span, tokens, deptree, question_tokens, question_deptre
 	return deptree_paths
 
 def parse_data(path):
-	i =0
+	i =1
 	global df
 	global N
 	global curr_file
@@ -242,7 +244,7 @@ def parse_data(path):
 
 	for (root, files, filenames) in os.walk(path):
 		for file in filenames:
-			if (i == 2):
+			if (i == 100):
 				break
 			file = os.path.splitext(file)[0]
 			if file.find('_q') >= 0:
@@ -266,12 +268,17 @@ def parse_data(path):
 
 			# Create features for each constituent in ans_features, related to each in q_features
 			for i in range(len(q_features[0].get('tokens',[]))):
+				curr_question_g_truth = []
 				#curr_question_tokens = question['questions']['tokens']
 				curr_question_tokens = q_features[0].get('tokens',[])[i]
 				curr_question_deptree = q_features[0].get('deps_basic',[])[i]
 				curr_question_lemmas = q_features[0].get('lemmas',[])[i]
 				curr_question_pos	 = q_features[0].get('pos',[])[i]
-				curr_question_g_truth = q_features[0].get('ground_truth',[])
+				curr_question_g_truth = q_features[0].get('ground_truth',[])[i]
+				# for i in range(len(temp)):
+				# 	for j in range(len(temp[i])):
+				# 		temp[i][j] = ' '.join(temp[i][j])
+				# 	curr_question_g_truth.extend(temp[i][j])
 				for j in range(len(ans_features[0].get('tokens',[]))):
 					curr_tokens = ans_features[0].get('tokens',[])[j]
 					curr_lemmas = ans_features[0].get('lemmas',[])[j]
@@ -296,7 +303,7 @@ def parse_data(path):
 
 						#span_words = ' '.join(curr_tokens[span['start']:span['end']])
 						span_words = constituent['text']
-						curr_features.append(span_words)
+						
 
 						constituent_length_features = length_feature(constituent, curr_tokens)
 						constituent_length_features.append(len(curr_tokens))
@@ -321,19 +328,26 @@ def parse_data(path):
 						constituent_deptree_path = deptree_path_feature(
 							constituent, curr_tokens, curr_deptree, curr_question_tokens, curr_question_deptree)
 
-						if span_words in curr_question_g_truth:
+						if span_words.strip() in curr_question_g_truth:
 							constituent_answer = 'Y'
 						curr_features.append(constituent_answer)
 
+						#span words
+						curr_features.append(span_words)
+						#qs
+						curr_features.append(' '.join(curr_question_tokens))
+						#ground truth
+						curr_features.append(curr_question_g_truth)
 						combined_features.append(curr_features[:])
 						del curr_features[3:]
 
 			if curr_file == chunk_size:
 				# Write to file
 				print('Writing!')
-				features = ['root match 1', 'sent_root_qs', 'qs_root_sent', 'span_words', 'n_wrds_l', 'n_wrds_r', 
+				features = ['root match 1', 'sent_root_qs', 'qs_root_sent',  'n_wrds_l', 'n_wrds_r', 
 				'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf', 
-				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent', 'pos', 'lemma', 'Answer' ]
+				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent', 'pos', 'lemma', 'Answer', 
+				'span_words', 'q_words', 'ground_truth' ]
 				df = pandas.DataFrame.from_records(combined_features, columns = features)
 				if not os.path.exists(output_file_path):
 					os.makedirs(output_file_path)
