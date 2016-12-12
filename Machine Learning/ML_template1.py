@@ -29,16 +29,18 @@ from sklearn.ensemble import RandomForestClassifier
 #To check the version of python
 #print "Python : {}".format(sys.version)
 	
+n_x = 4	#Columns which are considered features
+n_y = 5 # the column for label
 # Load dataset
 frames = []
 for i in range(100):
-	url = "iris1.csv"
+	url = ".csv"
 	# names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 	dataset = pandas.read_csv(url)#, names=names)
 	frames.append(dataset)
 	final_dataset = pd.concat(frames)
 
-	
+
 
 
 #Different buil-in functions of ndarray
@@ -71,20 +73,18 @@ plt.show()
 '''
 
 '''
-Extracting test and train data sets from given data set
-'''
+#Extracting test and train data sets from given data set
+
 
 
 
 #Extracting the values from the dataframe
-#array = dataset.values
+array = dataset.values
 
 #Separating the features and the labels
-# X = array [:,0:4]
-# Y = array[:,4]
+X = array [:,0:n_x]
+Y = array[:,n_y]
 
-X = import_train_inp()
-Y = import_train_out()
 
 #Validation Size
 test_size = 0.3
@@ -98,7 +98,7 @@ X_train, X_test, Y_train, Y_test = model_selection.train_test_split(X, Y,
 
 
 '''
-Preparing the metrics for evaluation and cross-validation
+#Preparing the metrics for evaluation and cross-validation
 '''
 
 #Evaluation metrics and test options
@@ -117,7 +117,7 @@ models.append(('LR', LogisticRegression()))
 models.append(('LDA', LinearDiscriminantAnalysis()))
 #models.append(('SVM', LinearSVC(dual=False,class_weight = 'balanced')))
 #models.append(('dt', DecisionTreeClassifier(max_depth=4)))
-models.append(('rf',RandomForestClassifier(n_estimators=1000)))
+#models.append(('rf',RandomForestClassifier(n_estimators=1000)))
 #models.append(('CART', DecisionTreeClassifier()))
 #models.append(('KNN', KNeighborsClassifier()))
 #models.append(('SVM', SVC(kernel='rbf', probability=True)))
@@ -193,6 +193,9 @@ for i in range(0,len(pred1_BOM)):
 print "Accuracy of BoM is ", accuracy_score(Y_test,pred_BOM)
 print "Accuracy of BoM for whole data_setis ", accuracy_score(Y,pred1_BOM)'''
 #('SVM', SVC(kernel='rbf', probability=True, class_weight = 'balanced')), ('dt', DecisionTreeClassifier(max_depth=4)),
+
+
+'''
 models_d=[('LR', LogisticRegression()), ('LDA', LinearDiscriminantAnalysis()), ('rf',RandomForestClassifier(n_estimators=1000))]#, ('KNN', KNeighborsClassifier())]
 eclf = VotingClassifier(estimators=models_d, voting='soft', weights=models_eval)
 eclf = eclf.fit(X_train,Y_train)
@@ -202,6 +205,7 @@ eclf_predict2 = eclf.predict(X_train)
 print "Accuracy for ecl test:",accuracy_score(Y_test,eclf_predict)
 print "Accuracy for ecl whole:",accuracy_score(Y,eclf_predict1)
 print "Accuracy for ecl train:",accuracy_score(Y_train,eclf_predict2)
+'''
 
 '''clf = MLPClassifier(activation='relu', alpha=1e-05, batch_size=500,
        beta_1=0.9, beta_2=0.1, early_stopping=False,
