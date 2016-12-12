@@ -5,7 +5,7 @@ def parse_json(filename):
     elements = []
     ext = '.json'
     i = 0
-
+    qid =''
     while i < 2:
         if i == 1:
             filename = filename + '_q'
@@ -17,6 +17,7 @@ def parse_json(filename):
                 #gr_truths =[]
                 if i == 1:
                     for q in file_data['questions']:
+                        qid = q.get('id')
                         qs_gr_truth =[]
                         d.extend(q.get('sentences',[]))
                         temp = q.get('answers',[])
@@ -40,9 +41,10 @@ def parse_json(filename):
                     deps_basic.append(sentence.get('deps_basic',[]))
                     lemmas.append(sentence.get('lemmas',[]))
                     constituents.append(sentence.get('constituents',[]))
+
                     if i:
                         g_truths.append(gr_truths[j])
-                elements.append([{'pos':pos,'tokens':tokens,'parse':parse,'constituents':constituents, 'deps_basic':deps_basic, 'lemmas':lemmas, 'ground_truth':g_truths}])
+                elements.append([{'pos':pos,'tokens':tokens,'parse':parse,'constituents':constituents, 'deps_basic':deps_basic, 'lemmas':lemmas, 'ground_truth':g_truths, 'id':qid}])
         else:
             elements.append([])
         i += 1
