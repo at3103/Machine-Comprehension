@@ -6,6 +6,7 @@ from feature_extractor import *
 from collections import Counter
 import pandas
 import re
+import networkx
 
 word_vectors_filename = "../data/glove/glove.6B.50d.txt"
 word_vectors = {}
@@ -13,11 +14,109 @@ df = {}
 N = 0
 cosine_similarity_threshold = 0.75
 
+stanford_deps_hierarchy = networkx.DiGraph()
+
 output_file_path = '../data/featuredata'
 # Number of files' data that is written into a single output file
 chunk_size = 10
 curr_file = 1
 num_files_written = 1
+
+def init_deps_hierarchy():
+	global stanford_deps_hierarchy
+	stanford_deps_hierarchy.add_edge('treeroot', 'root')
+	stanford_deps_hierarchy.add_edge('treeroot', 'dep')
+
+	stanford_deps_hierarchy.add_edge('dep', 'aux')
+	stanford_deps_hierarchy.add_edge('dep', 'arg')
+	stanford_deps_hierarchy.add_edge('dep', 'case')
+	stanford_deps_hierarchy.add_edge('dep', 'cc')
+	stanford_deps_hierarchy.add_edge('dep', 'clf')
+	stanford_deps_hierarchy.add_edge('dep', 'conj')
+	stanford_deps_hierarchy.add_edge('dep', 'dislocated')
+	stanford_deps_hierarchy.add_edge('dep', 'expl')
+	stanford_deps_hierarchy.add_edge('dep', 'foreign')
+	stanford_deps_hierarchy.add_edge('dep', 'list')
+	stanford_deps_hierarchy.add_edge('dep', 'mod')
+	stanford_deps_hierarchy.add_edge('dep', 'name')
+	stanford_deps_hierarchy.add_edge('dep', 'obl')
+	stanford_deps_hierarchy.add_edge('dep', 'orphan')
+	stanford_deps_hierarchy.add_edge('dep', 'parataxis')
+	stanford_deps_hierarchy.add_edge('dep', 'goeswith')
+	stanford_deps_hierarchy.add_edge('dep', 'punct')
+	stanford_deps_hierarchy.add_edge('dep', 'ref')
+	stanford_deps_hierarchy.add_edge('dep', 'remnant')
+	stanford_deps_hierarchy.add_edge('dep', 'reparandum')
+	stanford_deps_hierarchy.add_edge('dep', 'sdep')
+	stanford_deps_hierarchy.add_edge('dep', 'vocative')
+
+	stanford_deps_hierarchy.add_edge('aux', 'auxpass')
+	stanford_deps_hierarchy.add_edge('aux', 'cop')
+
+	stanford_deps_hierarchy.add_edge('arg', 'agent')
+	stanford_deps_hierarchy.add_edge('arg', 'comp')
+	stanford_deps_hierarchy.add_edge('arg', 'subj')
+
+	stanford_deps_hierarchy.add_edge('cc', 'cc:preconj')
+
+	stanford_deps_hierarchy.add_edge('comp', 'acomp')
+	stanford_deps_hierarchy.add_edge('comp', 'ccomp')
+	stanford_deps_hierarchy.add_edge('comp', 'xcomp')
+	stanford_deps_hierarchy.add_edge('comp', 'obj')
+
+	stanford_deps_hierarchy.add_edge('obj', 'dobj')
+	stanford_deps_hierarchy.add_edge('obj', 'iobj')
+	stanford_deps_hierarchy.add_edge('obj', 'pobj')
+
+	stanford_deps_hierarchy.add_edge('subj', 'nsubj')
+	stanford_deps_hierarchy.add_edge('subj', 'csubj')
+
+	stanford_deps_hierarchy.add_edge('nsubj', 'nsubjpass')
+
+	stanford_deps_hierarchy.add_edge('csubj', 'csubjpass')
+
+	stanford_deps_hierarchy.add_edge('mod', 'acl')
+	stanford_deps_hierarchy.add_edge('mod', 'amod')
+	stanford_deps_hierarchy.add_edge('mod', 'appos')
+	stanford_deps_hierarchy.add_edge('mod', 'advcl')
+	stanford_deps_hierarchy.add_edge('mod', 'det')
+	stanford_deps_hierarchy.add_edge('mod', 'discourse')
+	stanford_deps_hierarchy.add_edge('mod', 'preconj')
+	stanford_deps_hierarchy.add_edge('mod', 'vmod')
+	stanford_deps_hierarchy.add_edge('mod', 'mwe')
+	stanford_deps_hierarchy.add_edge('mod', 'advmod')
+	stanford_deps_hierarchy.add_edge('mod', 'rcmod')
+	stanford_deps_hierarchy.add_edge('mod', 'quantmod')
+	stanford_deps_hierarchy.add_edge('mod', 'nn')
+	stanford_deps_hierarchy.add_edge('mod', 'npadvmod')
+	stanford_deps_hierarchy.add_edge('mod', 'num')
+	stanford_deps_hierarchy.add_edge('mod', 'nmod')
+	stanford_deps_hierarchy.add_edge('mod', 'number')
+	stanford_deps_hierarchy.add_edge('mod', 'nummod')
+	stanford_deps_hierarchy.add_edge('mod', 'prep')
+	stanford_deps_hierarchy.add_edge('mod', 'possessive')
+	stanford_deps_hierarchy.add_edge('mod', 'prt')
+
+	stanford_deps_hierarchy.add_edge('acl', 'acl:relcl')
+
+	stanford_deps_hierarchy.add_edge('det', 'det:predet')
+
+	stanford_deps_hierarchy.add_edge('mwe', 'compound')
+	stanford_deps_hierarchy.add_edge('mwe', 'fixed')
+	stanford_deps_hierarchy.add_edge('mwe', 'flat')
+	stanford_deps_hierarchy.add_edge('mwe', 'mark')
+
+	stanford_deps_hierarchy.add_edge('compound', 'compound:prt')
+
+	stanford_deps_hierarchy.add_edge('nmod', 'nmod:npmod')
+	stanford_deps_hierarchy.add_edge('nmod', 'nmod:tmod')
+	stanford_deps_hierarchy.add_edge('nmod', 'nmod:poss')
+
+	stanford_deps_hierarchy.add_edge('advmod', 'neg')
+
+	stanford_deps_hierarchy.add_edge('npadvmod', 'tmod')
+
+	stanford_deps_hierarchy.add_edge('sdep', 'xsubj')
 
 def get_vector_for_word(word):
 	normalized_word = word.lower()
@@ -214,19 +313,55 @@ def lemmas_feature(span, deptree, tokens, lemmas, question_lemmas):
 
 	return lemma_similarity
 
-def deptree_path_feature(span, tokens, deptree, question_tokens, question_deptree):
-	deptree_paths = []
+def compare_paths(path1, path2, pos1, pos2, graph1, graph2):
+	similarity = 0
 
-	# Find similar words in sentence and question
-	for token in tokens:
-		for q_token in question_tokens:
-			if cosine_similarity(get_vector_for_word(token), get_vector_for_word(q_token)) > cosine_similarity_threshold:
-				# Calculate path from the token to the span
-				deptree_path = []
-				token_index = tokens.index(token)
-				# TODO: Complete this implementation!
+	# Compare both nodes as well as graph connections
+	for index in min(range(len(path1)), range(len(path2))):
+		curr_node1 = path1[index]
+		curr_node2 = path2[index]
+		next_node1 = path1[index + 1] if index in range(len(path1) - 1) else None
+		next_node2 = path2[index + 1] if index in range(len(path2) - 1) else None
+		# Compare node (POS tags) except for the first and last index
+		if index > 0 and index < min((len(path1)), (len(path2))) - 1:
+			pos_tag1 = pos1[curr_node1]
+			pos_tag2 = pos2[curr_node2]
+			if pos_tag1 == pos_tag2 or pos_tag1 in pos_tag2 or pos_tag2 in pos_tag1:
+				similarity += 1
+		# Compare graph connection
+		if next_node1 is not None and next_node2 is not None:
+			conn1 = (graph1[curr_node1][next_node1]).get('dep')
+			conn2 = (graph2[curr_node2][next_node2]).get('dep')
+			if conn1 == conn2 or conn1 in stanford_deps_hierarchy.predecessors(conn2) or \
+				conn2 in stanford_deps_hierarchy.predecessors(conn1) or \
+							stanford_deps_hierarchy.predecessors(conn1) == stanford_deps_hierarchy.predecessors(conn2):
+				similarity += 1
 
-	return deptree_paths
+	return similarity
+
+def deptree_path_feature(span, tokens, graph, pos, question_tokens, question_graph, question_pos, wh_word_loc):
+	max_path_similarity = 0
+
+	# Find similar words in the sentence and question
+	for i in range(len(tokens)):
+		token = tokens[i]
+		for j in range(len(question_tokens)):
+			q_token = question_tokens[j]
+			if cosine_similarity(get_vector_for_word(token),
+								 get_vector_for_word(q_token)) > cosine_similarity_threshold:
+				# Calculate path from wh-word in the question to the question word
+				wh_word_to_word = networkx.shortest_path(question_graph, wh_word_loc, j)
+
+				# Calculate path from word to each of the span words
+				for k in range(span.get('start'), span.get('end') + 1):
+					span_word_to_word = networkx.shortest_path(graph, k, i)
+
+					# Compare this path with the question graph path
+					curr_similarity = compare_paths(wh_word_to_word, span_word_to_word, question_pos, pos, question_graph, graph)
+					if max_path_similarity < curr_similarity:
+						max_path_similarity = curr_similarity
+
+	return max_path_similarity
 
 def parse_data(path):
 	i =1
@@ -241,6 +376,9 @@ def parse_data(path):
 			line_list = line.split()
 			word = line_list.pop(0)
 			word_vectors[word] = line_list
+
+	# Initialize the dependencies hierarchy, as given in the Stanford Dependencies Manual
+	init_deps_hierarchy()
 
 	for (root, files, filenames) in os.walk(path):
 		for file in filenames:
@@ -275,17 +413,38 @@ def parse_data(path):
 				curr_question_lemmas = q_features[0].get('lemmas',[])[i]
 				curr_question_pos	 = q_features[0].get('pos',[])[i]
 				curr_question_g_truth = q_features[0].get('ground_truth',[])[i]
-				# for i in range(len(temp)):
-				# 	for j in range(len(temp[i])):
-				# 		temp[i][j] = ' '.join(temp[i][j])
-				# 	curr_question_g_truth.extend(temp[i][j])
+
+				# Construct networkx graph from the deptree for the question
+				curr_question_graph = networkx.Graph()
+				# Add edges for each dep in deptree
+				for dep in curr_question_deptree:
+					curr_question_graph.add_edge(dep[1], dep[2], {'dep': dep[0]})
+
+				curr_question_wh_word_loc = -1
+				# Find wh-word for the question
+				for wh_index in range(len(curr_question_pos)):
+					q_word = curr_question_pos[wh_index]
+					if re.match('W', q_word):
+						curr_question_wh_word_loc = wh_index
+						break
+
+				max_sentence_length = len(max(ans_features[0].get('tokens'), key=len))
+				deptree_path_scaling = 1.0/(2 * max_sentence_length - 3)
+
 				for j in range(len(ans_features[0].get('tokens',[]))):
 					curr_tokens = ans_features[0].get('tokens',[])[j]
 					curr_lemmas = ans_features[0].get('lemmas',[])[j]
 					curr_pos = ans_features[0].get('pos',[])[j]
 					curr_deptree = ans_features[0].get('deps_basic',[])[j]
 					curr_constituents = ans_features[0].get('constituents',[])[j]
+
 					curr_tf = tf_list[j]
+
+					# Construct networkx graph from the deptree for the sentence
+					curr_graph = networkx.Graph()
+					# Add edges for each dep in deptree
+					for dep in curr_deptree:
+						curr_graph.add_edge(dep[1], dep[2], {'dep': dep[0]})
 
 					# List for current features
 					curr_features = []
@@ -315,8 +474,8 @@ def parse_data(path):
 						constituent_bigram_freqs = sum_tf_idf(constituent, curr_tokens, curr_tf, curr_question_tokens, 2)
 						curr_features.extend(constituent_bigram_freqs[:-1])											
 
-						constituent_label_feature = constituent['label'] if 'label' in constituent else 0
-						curr_features.append(constituent_label_feature)
+						# constituent_label_feature = constituent['label'] if 'label' in constituent else 0
+						# curr_features.append(constituent_label_feature)
 
 						constituent_pos_tag_feature = pos_feature(constituent, curr_pos, curr_question_pos, len(curr_tokens))
 						curr_features.append(constituent_pos_tag_feature)
@@ -325,8 +484,10 @@ def parse_data(path):
 							constituent, curr_deptree, curr_tokens, curr_lemmas, curr_question_lemmas)
 						curr_features.append(constituent_lemmas_feature)
 
-						constituent_deptree_path = deptree_path_feature(
-							constituent, curr_tokens, curr_deptree, curr_question_tokens, curr_question_deptree)
+						constituent_deptree_path = deptree_path_scaling * deptree_path_feature(
+							constituent, curr_tokens, curr_graph, curr_pos, curr_question_tokens, curr_question_graph,
+							curr_question_pos, curr_question_wh_word_loc)
+						curr_features.append(constituent_deptree_path)
 
 						if span_words.strip() in curr_question_g_truth:
 							constituent_answer = 'Y'
@@ -346,8 +507,9 @@ def parse_data(path):
 				print('Writing!')
 				features = ['root match 1', 'sent_root_qs', 'qs_root_sent',  'n_wrds_l', 'n_wrds_r', 
 				'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf', 
-				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent', 'pos', 'lemma', 'Answer', 
+				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent', 'pos', 'lemma', 'dep_path_similarity', 'Answer', 
 				'span_words', 'q_words', 'ground_truth' ]
+
 				df = pandas.DataFrame.from_records(combined_features, columns = features)
 				if not os.path.exists(output_file_path):
 					os.makedirs(output_file_path)
