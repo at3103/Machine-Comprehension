@@ -49,8 +49,8 @@ def metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
         score = metric_fn(prediction, ground_truth)
         scores_for_ground_truths.append(score)
     
-    if metric_fn == exact_match_score and max(scores_for_ground_truths)>0:
-        print("EM",prediction,ground_truths) 
+    # if metric_fn != exact_match_score or max(scores_for_ground_truths)<=0:
+    #     print("NotEM",prediction,ground_truths) 
 
     return max(scores_for_ground_truths)
 
