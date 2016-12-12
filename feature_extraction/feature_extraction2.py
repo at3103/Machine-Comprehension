@@ -8,6 +8,7 @@ import pandas
 import re
 import string
 import networkx
+import traceback
 
 word_vectors_filename = "../data/glove/glove.6B.50d.txt"
 word_vectors = {}
@@ -472,23 +473,32 @@ def parse_data(path):
 	# Empty list to store feature values
 	combined_features = []
 	written_files_path = "../data/featuredata/written_files.txt"
+	unwritten_files_path = "../data/featuredata/unwritten_files.txt"
 	written_files = []
 	if os.path.isfile(written_files_path): 
 		with open(written_files_path) as f:
-			written_files = f.read().splitlines()
-	
+			already_written_files = f.read().splitlines()
+	print already_written_files
+
 	for (root, files, filenames) in os.walk(path):
 			
 		for file in filenames:
-			# if (i == 100):
-			# 	break
-			if file in written_files:
+			file = os.path.splitext(file)[0]	
+			if file in already_written_files:
 				continue
-			file = os.path.splitext(file)[0]
+			
 			if file.find('_q') >= 0:
 				continue
 			print "Processing {0}".format(file)
-			ans_features, q_features = parse_json(os.path.join(root, file))
+			try :
+				ans_features, q_features = parse_json(os.path.join(root, file))
+			except Exception, e:
+				traceback.print_exc()
+				#append to unwritten files and reset
+				with open(unwritten_files_path,'a') as unwriting_file:
+					unwriting_file.write(file)
+					unwriting_file.write("\n")
+				continue
 			i += 1
 
 			all_tokens = []
