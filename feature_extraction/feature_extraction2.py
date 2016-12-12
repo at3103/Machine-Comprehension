@@ -19,7 +19,7 @@ stanford_deps_hierarchy = networkx.DiGraph()
 
 output_file_path = '../data/featuredata'
 # Number of files' data that is written into a single output file
-chunk_size = 1
+chunk_size = 10
 curr_file = 1
 num_files_written = 1
 
@@ -296,15 +296,34 @@ def length_feature(span, tokens):
 
     return features
 
-def pos_feature(span, pos, q_pos, sent_length):
+def constituent_feature(constituent_label, q_pos, qid):
+	wh_tag = ''
+	pos_dict = {'WDT': ['NP'],
+				'WP': ['NP', 'PNP'],
+				'WP$': ['NP', 'PNP'],
+				'WRB': ['ADJP', 'ADVP', 'VP', 'PRT']}
+
+	for pos_qs in q_pos:
+		if re.match('W', pos_qs):
+			wh_tag = pos_qs  # re.split('W',)
+			break
+	if wh_tag == '':
+		print qid
+	if constituent_label in pos_dict.get(wh_tag, []):
+		return 1
+	else:
+		return 0
+
+
+def pos_feature(span, pos, q_pos):
 	# Calculate POS tags of the constituent
 	length = int(span['end']) - int(span['start']) + 1
 	penalty = 1.0/length
 	score = 0.0
 	wh_tag =''
-	pos_dict = {'WDT' : ['DT'],
+	pos_dict = {'WDT' : ['DT', 'NN','NNP', 'NNPS', 'NNS'],
 				'WP' : ['NN','NNP', 'NNPS', 'NNS'],
-				'WP$': ['PRP$'],
+				'WP$': ['PRP$', 'NN','NNP', 'NNPS', 'NNS'],
 				'WRB': ['RB','RBR','RBS','CD']}
 
 	for pos_qs in q_pos:
@@ -322,6 +341,34 @@ def pos_feature(span, pos, q_pos, sent_length):
 		else:
 			score -= penalty
 		score /=length
+	return score
+
+def ner_feature(span, ners, q_tokens):
+	# Calculate POS tags of the constituent
+	length = int(span['end']) - int(span['start']) + 1
+	penalty = 1.0 / length
+	score = 0.0
+	wh_tag = ''
+	pos_dict = {'what': ['TIME', 'DATE', 'ORGANIZATION', 'LOCATION', 'PERSON'],
+				'which': ['TIME', 'DATE', 'ORGANIZATION', 'LOCATION', 'PERSON'],
+				'who': ['PERSON', 'ORGANIZATION'],
+				'whom': ['PERSON', 'ORGANIZATION'],
+				'whose': ['PERSON', 'ORGANIZATION'],
+				'where': ['LOCATION'],
+				'when': ['DATE','TIME'],
+				'how': ['MONEY', 'PERCENT', 'NUMBER']}
+
+	wh_tag = ''
+	for token in q_tokens:
+		if normalize_answer(token) in pos_dict.keys():
+			wh_tag = normalize_answer(token)
+			break
+	ner_tags = ners[int(span['start']):int(span['end']) + 1]
+	for tag in ner_tags:
+		if tag in pos_dict.get(wh_tag, []):
+			wrong_tags = ner_tags.index(tag)
+			score += 1 - float(penalty * wrong_tags)
+		score /= length
 	return score
 
 def find_parent_index_in_deptree(token_index, deptree):
@@ -424,15 +471,23 @@ def parse_data(path):
 
 	# Empty list to store feature values
 	combined_features = []
-
+	written_files_path = "../data/featuredata/written_files.txt"
+	written_files = []
+	if os.path.isfile(written_files_path): 
+		with open(written_files_path) as f:
+			written_files = f.read().splitlines()
+	
 	for (root, files, filenames) in os.walk(path):
-
+			
 		for file in filenames:
-			if (i == 100):
-				break
+			# if (i == 100):
+			# 	break
+			if file in written_files:
+				continue
 			file = os.path.splitext(file)[0]
 			if file.find('_q') >= 0:
 				continue
+			print "Processing {0}".format(file)
 			ans_features, q_features = parse_json(os.path.join(root, file))
 			i += 1
 
@@ -445,9 +500,7 @@ def parse_data(path):
 				all_tokens.extend(set(j))
 				N += 1
 			df = Counter(all_tokens)
-			
-
-
+			written_files.append(file)
 			# Create features for each constituent in ans_features, related to each in q_features
 			for i in range(len(q_features[0].get('tokens',[]))):
 				curr_question_g_truth = []
@@ -458,6 +511,7 @@ def parse_data(path):
 				curr_question_pos	 = q_features[0].get('pos',[])[i]
 				curr_question_g_truth = q_features[0].get('ground_truth',[])[i]
 				qid = q_features[0].get('id','')[i]
+				print('Question ID: ' + str(qid))
 
 				# Construct networkx graph from the deptree for the question
 				curr_question_graph = networkx.Graph()
@@ -482,6 +536,7 @@ def parse_data(path):
 					curr_pos = ans_features[0].get('pos',[])[j]
 					curr_deptree = ans_features[0].get('deps_basic',[])[j]
 					curr_constituents = ans_features[0].get('constituents',[])[j]
+					curr_ners = ans_features[0].get('ners',[])[j]
 
 					curr_tf = tf_list[j]
 
@@ -519,20 +574,23 @@ def parse_data(path):
 						constituent_bigram_freqs = sum_tf_idf(constituent, curr_tokens, curr_tf, curr_question_tokens, 2)
 						curr_features.extend(constituent_bigram_freqs[:-1])											
 
-						# constituent_label_feature = constituent['label'] if 'label' in constituent else 0
-						# curr_features.append(constituent_label_feature)
+						constituent_label_feature = constituent_feature(constituent['label'], curr_question_pos, qid)
+						curr_features.append(constituent_label_feature)
 
-						constituent_pos_tag_feature = pos_feature(constituent, curr_pos, curr_question_pos, len(curr_tokens))
+						constituent_pos_tag_feature = pos_feature(constituent, curr_pos, curr_question_pos)
 						curr_features.append(constituent_pos_tag_feature)
+
+						constituent_ner_tag_feature = ner_feature(constituent, curr_ners, curr_question_tokens)
+						curr_features.append(constituent_ner_tag_feature)
 
 						constituent_lemmas_feature = lemmas_feature(
 							constituent, curr_deptree, curr_tokens, curr_lemmas, curr_question_lemmas)
 						curr_features.append(constituent_lemmas_feature)
 
-						# constituent_deptree_path = deptree_path_scaling * deptree_path_feature(
-						# 	constituent, curr_tokens, curr_graph, curr_pos, curr_question_tokens, curr_question_graph,
-						# 	curr_question_pos, curr_question_wh_word_loc)
-						# curr_features.append(constituent_deptree_path)
+						constituent_deptree_path = deptree_path_scaling * deptree_path_feature(
+							constituent, curr_tokens, curr_graph, curr_pos, curr_question_tokens, curr_question_graph,
+							curr_question_pos, curr_question_wh_word_loc)
+						curr_features.append(constituent_deptree_path)
 						# curr_question_g_truth = map(normalize_answer,curr_question_g_truth)
 						# if span_words in curr_question_g_truth:
 						# 	constituent_answer = 'Y'
@@ -550,13 +608,13 @@ def parse_data(path):
 						curr_features.append(curr_question_g_truth)
 						combined_features.append(curr_features[:])
 						del curr_features[3:]
-				print "Done with qs"				
+				# print "Done with qs"
 			if curr_file == chunk_size:
 				# Write to file
 				print('Writing!')
 				features = ['root match 1', 'sent_root_qs', 'qs_root_sent',  'n_wrds_l', 'n_wrds_r', 
 				'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf', 
-				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'pos', 'lemma', 'F1_score', 
+				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent_label', 'pos', 'ner', 'lemma', 'deptree_path', 'F1_score',
 				'span_words', 'q_words', 'ground_truth' ]
 
 				df = pandas.DataFrame.from_records(combined_features, columns = features)
@@ -568,10 +626,18 @@ def parse_data(path):
 				combined_features = []
 				curr_file = 0
 				num_files_written += 1
+				#append to written files and reset
+				with open(written_files_path,'a') as writing_file:
+					for w_file in written_files:
+						writing_file.write(w_file)
+						writing_file.write("\n")
+				written_files = []
+				
 			curr_file += 1
 
+	print "All done"
 """
 Read in processed data from JSON, create features, save to CSV
 """
 if __name__ == '__main__':
-	parse_data("../data/processed/processed_dev")
+	parse_data("../data/processed/processed_train")
