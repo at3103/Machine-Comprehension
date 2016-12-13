@@ -29,8 +29,8 @@ from sklearn.ensemble import RandomForestClassifier
 #To check the version of python
 #print "Python : {}".format(sys.version)
 	
-n_x = 4	#Columns which are considered features
-n_y = 5 # the column for label
+n_x = 22	#Columns which are considered features
+n_y = 23# the column for label
 # Load dataset
 frames = []
 for i in range(100):
