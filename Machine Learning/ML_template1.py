@@ -22,13 +22,17 @@ from sklearn.model_selection import cross_val_predict
 from sklearn.model_selection import GroupKFold
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVR
 from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
+from sklearn.neural_network import MLPRegressor
 from kmeans import *
 from sklearn.ensemble import VotingClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import linear_model
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.linear_model import SGDRegressor
 import pandas
 import numpy as np
 import os
@@ -41,7 +45,7 @@ n_y = 22 # the column for label
 
 # Load dataset
 frames = []
-for i in xrange(1,50):
+for i in xrange(1,38):
 	url = "../data/featuredata/{0}.csv".format(i)
 	# names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 	dataset = pandas.read_csv(url)#, names=names)
@@ -85,18 +89,18 @@ print dataset.shape, dataset.ndim, len(dataset.shape) #, dataset.size#, dataset.
 
 #Extracting the values from the dataframe
 array = final_dataset.values
-print array[0]
+#print array[0]
 #Separating the features and the labels
 X = array[:,1:]
 Y = array[:,n_y]
 qid = array[:,24]
-print X[0], Y[0], qid[0]
+#print X[0], Y[0], qid[0]
 #Validation Size
 test_size = 0.3
 
 #Set the seed for randomness here
 seed = 7
-gkf = GroupKFold(n_splits=3)
+gkf = GroupKFold(n_splits=2)
 #Obtain the training and test sets
 #X_train, X_test, Y_train, Y_test = model_selection.train_test_split(X_qid_uniq,
 #	test_size = test_size, random_state = seed)
@@ -104,7 +108,6 @@ X_train = []
 X_test = []
 Y_train = []
 Y_test = []
-
 #X_train, X_test, Y_train, Y_test = gkf.split(X,Y,groups = qid)
 splits = gkf.split(X,Y,groups = qid)
 cur_splits = splits.next()
@@ -115,6 +118,31 @@ Y_test = Y[cur_splits[1]]
 
 print X_train.shape, X_test.shape
 print Y_train.shape, Y_test.shape
+
+# for i in range(len(Y_train)):
+# 	if float(Y_train[i]) == 1.0:
+# 		Y_train[i] = 'Y'
+# 	elif float(Y_train[i]) >= 0.25:
+# 		Y_train[i] = 'M'
+# 	else:
+# 		Y_train[i] = 'N'
+
+# for i in range(len(Y_test)):
+# 	if float(Y_test[i]) == 1.0:
+# 		Y_test[i] = 'Y'
+# 	elif float(Y_test[i]) >= 0.25:
+# 		Y_test[i] = 'M'
+# 	else:
+# 		Y_test[i] = 'N'
+
+
+
+#Y_train = list(Y_train)
+
+#Y = np.asarray(array[n_y], dtype="|S6")
+
+#print Y_train.dtype
+
 '''
 #Preparing the metrics for evaluation and cross-validation
 '''
@@ -131,16 +159,18 @@ scoring1 = 'f1_macro'
 #Load the models
 models = []
 
-#models.append(('LR', LogisticRegression()))
-#models.append(('LDA', LinearDiscriminantAnalysis()))
-#models.append(('SVM', LinearSVC(dual=False,class_weight = 'balanced')))
+# models.append(('LR', LogisticRegression()))
+# models.append(('LDA', LinearDiscriminantAnalysis()))
+# models.append(('SVM', LinearSVC(dual=False,class_weight = 'balanced')))
 #models.append(('dt', DecisionTreeClassifier(max_depth=4)))
 #models.append(('rf',RandomForestClassifier(n_estimators=1000)))
 #models.append(('CART', DecisionTreeClassifier()))
 #models.append(('KNN', KNeighborsClassifier()))
-#models.append(('SVM', SVC(kernel='rbf', probability=True)))
+# models.append(('SVM', SVC(kernel='rbf', probability=True)))
 #models.append(('SVR', SVR(kernel='linear', C=1e3)))
 models.append(('LinearRegression', linear_model.LinearRegression()))
+models.append(('BayesianRegression', linear_model.BayesianRidge()))
+#models.append(('Perceptron', linear_model.Perceptron()))
 #Models_Evaluation
 models_eval=[]
 models_metrics=[]
@@ -158,16 +188,16 @@ cv_predict=[]
 #print Y_train
 #print len(Y_train),len(X_train)
 for name, model in models:
-	kfold = model_selection.KFold(n_splits=n_fold, random_state=cv_seed)
-	cv_results = model_selection.cross_val_score(model, X_train[:,:-4], Y_train, cv=n_fold, scoring='mean_squared_error')
+	#kfold = model_selection.KFold(n_splits=n_fold, random_state=cv_seed)
+	#cv_results = model_selection.cross_val_score(model, X_train[:,:-4], Y_train, cv=n_fold, scoring=scoring)
 	#predicted = cross_val_predict(model, X_train, Y_train, cv=10)
 	#cv_predict.append(*predicted)
 	#cv_results1= model_selection.cross_val_score(model, X_train, Y_train, cv=kfold, scoring=scoring)
-	results.append(cv_results)
+	#results.append(cv_results)
 	names.append(name)
-	models_eval.append(cv_results.mean())
+	#models_eval.append(cv_results.mean())
 	#print name + " : ", cv_results.mean(),"(",cv_results.std(),")"
-	predictions=[]
+	#predictions=[]
 	predictions1=[]
 
 
@@ -216,9 +246,10 @@ for i in range(0,len(names)):
 	for j,item in enumerate(X_test):
 		#print item
 		combined_feature.append(list(item))
-		combined_feature[j].append(float(pred[j]))
+		#combined_feature[j].append(float(pred[j]))
+		combined_feature[j].append((pred[j]))
 	df = pandas.DataFrame.from_records(combined_feature, columns = features)
-	output_file_path = "../data/predictions/"
+	output_file_path = "../data/predictions/new/"
 	if not os.path.exists(output_file_path):
 		os.makedirs(output_file_path)
 	df.to_csv(os.path.join(output_file_path,names[i]+'_prediction.csv'))
@@ -261,18 +292,117 @@ print "Accuracy for ecl test:",accuracy_score(Y_test,eclf_predict)
 print "Accuracy for ecl whole:",accuracy_score(Y,eclf_predict1)
 print "Accuracy for ecl train:",accuracy_score(Y_train,eclf_predict2)
 '''
+# i = 1
+alph = [1e-01,1e-02,1e-03,1e-04,1e-05,1e-07,1,0.5,0.000004]
+lrn = [0.00001, 0.0001, 0.001, 0.01, 0.1, 0.002,0.4,0.3,0.0000006]
+for a in alph:
+	for l in lrn:
 
-'''clf = MLPClassifier(activation='relu', alpha=1e-05, batch_size=500,
-       beta_1=0.9, beta_2=0.1, early_stopping=False,
-       epsilon=1e-08, hidden_layer_sizes=(8, 4), learning_rate='constant',
-       learning_rate_init=0.00001, max_iter=2000, momentum=0.9,
-       nesterovs_momentum=True, power_t=0.5, random_state=1, shuffle=True,
-       solver='adam', tol=0.0001, validation_fraction=0.1, verbose=False,
-       warm_start=False)
-'''
-#clf.fit(cv_predict, Y_train)
-#pred_nn_bom = clf.predict(predictions)
-#print "Accuracy of clf BoM is ", accuracy_score(Y_test, pred_nn_bom)
+	# clf = SGDRegressor(alpha=alph, average=False, epsilon=0.1, eta0=0.01,
+ #         fit_intercept=True, l1_ratio=0.15, learning_rate='invscaling',
+ #         loss='squared_loss', n_iter=5, penalty='l2', power_t=0.25,
+ #         random_state=None, shuffle=True, verbose=0, warm_start=False)
+
+		clf = MLPRegressor(activation='relu', alpha=1e-05, batch_size=500,
+		       beta_1=0.9, beta_2=0.1, early_stopping=False,
+		       epsilon=a, hidden_layer_sizes=(12, 6), learning_rate='adaptive',
+		       learning_rate_init=l, max_iter=2000, momentum=0.9,
+		       nesterovs_momentum=True, power_t=0.5, random_state=1, shuffle=True,
+		       solver='adam', tol=0.0001, validation_fraction=0.1, verbose=False,
+		       warm_start=False)
+
+		#Y_train.reshape(Y_train.ndim,1)
+		clf.fit(X_train[:,:-4], Y_train)
+		pred = clf.predict(X_test[:,:-4])
+		#print "Accuracy of clf BoM is ", accuracy_score(Y_test, pred_nn_bom)
+		combined_feature = []
+		for j,item in enumerate(X_test):
+			#print item
+			combined_feature.append(list(item))
+			#combined_feature[j].append(float(pred[j]))
+			combined_feature[j].append((pred[j]))
+		ac_score = mean_squared_error(Y_test, pred)
+
+		print "MLPRegressor Accuracy is ", ac_score
+
+		features = ['root match 1', 'sent_root_qs', 'qs_root_sent',  'n_wrds_l', 'n_wrds_r', 
+					'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf', 
+					'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent_label', 'pos', 'ner', 'lemma', 'deptree_path', 'F1_score',
+					'span_words', 'q_words', 'ground_truth','predicted_F1_score']
+
+
+		df = pandas.DataFrame.from_records(combined_feature, columns = features)
+		output_file_path = "../data/predictions/mlcp/new"
+		if not os.path.exists(output_file_path):
+			os.makedirs(output_file_path)
+		df.to_csv(os.path.join(output_file_path,'MLP_prediction_alph'+str(i)+'.csv'))
+		i += 1
+
+
+# i = 1
+# lrn = [0.00001, 0.0001, 0.001, 0.01, 0.1, 0.002]
+# for l in lrn:
+# 	clf = GradientBoostingRegressor(n_estimators=100, learning_rate=l,
+# 	max_depth=1, random_state=0, loss='ls')
+# 	#Y_train.reshape(Y_train.ndim,1)
+# 	clf.fit(X_train[:,:-4], Y_train)
+# 	pred = clf.predict(X_test[:,:-4])
+# 	#print "Accuracy of clf BoM is ", accuracy_score(Y_test, pred_nn_bom)
+# 	combined_feature = []
+# 	for j,item in enumerate(X_test):
+# 		#print item
+# 		combined_feature.append(list(item))
+# 		#combined_feature[j].append(float(pred[j]))
+# 		combined_feature[j].append((pred[j]))
+# 	ac_score = mean_squared_error(Y_test, pred)
+
+# 	print "GBRegressor Accuracy is ", ac_score
+
+# 	features = ['root match 1', 'sent_root_qs', 'qs_root_sent',  'n_wrds_l', 'n_wrds_r', 
+# 				'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf', 
+# 				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent_label', 'pos', 'ner', 'lemma', 'deptree_path', 'F1_score',
+# 				'span_words', 'q_words', 'ground_truth','predicted_F1_score']
+
+
+# 	df = pandas.DataFrame.from_records(combined_feature, columns = features)
+# 	output_file_path = "../data/predictions/gbr/"
+# 	if not os.path.exists(output_file_path):
+# 		os.makedirs(output_file_path)
+# 	df.to_csv(os.path.join(output_file_path,'GBR_prediction_alph'+str(i)+'.csv'))
+# 	i += 1
+
+
+
+# clf = LinearSVR(epsilon=0.0, tol=0.0001, C=1.0, loss='epsilon_insensitive', 
+# fit_intercept=True, intercept_scaling=1.0, dual=True, verbose=0, 
+# random_state=None, max_iter=1000)
+# #Y_train.reshape(Y_train.ndim,1)
+# clf.fit(X_train[:,:-4], Y_train)
+# pred = clf.predict(X_test[:,:-4])
+# #print "Accuracy of clf BoM is ", accuracy_score(Y_test, pred_nn_bom)
+# combined_feature = []
+# for j,item in enumerate(X_test):
+# 	#print item
+# 	combined_feature.append(list(item))
+# 	#combined_feature[j].append(float(pred[j]))
+# 	combined_feature[j].append((pred[j]))
+# ac_score = mean_squared_error(Y_test, pred)
+
+# print "LSVRegressor Accuracy is ", ac_score
+
+# features = ['root match 1', 'sent_root_qs', 'qs_root_sent',  'n_wrds_l', 'n_wrds_r', 
+# 			'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf', 
+# 			'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent_label', 'pos', 'ner', 'lemma', 'deptree_path', 'F1_score',
+# 			'span_words', 'q_words', 'ground_truth','predicted_F1_score']
+
+
+# df = pandas.DataFrame.from_records(combined_feature, columns = features)
+# output_file_path = "../data/predictions/lsvr/"
+# if not os.path.exists(output_file_path):
+# 	os.makedirs(output_file_path)
+# df.to_csv(os.path.join(output_file_path,'LSVR_prediction_alph'+str(i)+'.csv'))
+
+
 
 #a = numpy.array([(1,2,3),(2,3,1)])
 #Different buil-in functions of ndarray
