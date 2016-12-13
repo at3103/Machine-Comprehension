@@ -10,41 +10,45 @@ from sklearn import model_selection
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import mean_squared_error
+
 from sklearn.metrics import precision_score
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVR
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.model_selection import cross_val_predict
+from sklearn.model_selection import GroupKFold
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import LinearSVC
 from sklearn.svm import SVC
-from util_sush import *
 from sklearn.neural_network import MLPClassifier
 from kmeans import *
 from sklearn.ensemble import VotingClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn import linear_model
+import pandas
+import numpy as np
+import os
 
 #To check the version of python
 #print "Python : {}".format(sys.version)
 	
-n_x = 4	#Columns which are considered features
-n_y = 5 # the column for label
+n_x = 22	#Columns which are considered features
+n_y = 22 # the column for label
 # Load dataset
 frames = []
-for i in range(100):
-	url = ".csv"
+for i in xrange(1,50):
+	url = "../data/featuredata/{0}.csv".format(i)
 	# names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 	dataset = pandas.read_csv(url)#, names=names)
 	frames.append(dataset)
 	final_dataset = pd.concat(frames)
 
-
-
-
 #Different buil-in functions of ndarray
-print dataset.shape, dataset.ndim, len(dataset.shape), dataset.size#, dataset.dtype, dataset.itemsize
+print dataset.shape, dataset.ndim, len(dataset.shape) #, dataset.size#, dataset.dtype, dataset.itemsize
 
 #To take a quick peek
 #print dataset.head(20)
@@ -63,13 +67,13 @@ print dataset.shape, dataset.ndim, len(dataset.shape), dataset.size#, dataset.dt
 #plt.show()
 
 #Histogram
-dataset.hist()
-plt.show()
+#dataset.hist()
+#plt.show()
 
 
 #Scatter Plot
-scatter_matrix(dataset)
-plt.show()
+#scatter_matrix(dataset)
+#plt.show()
 '''
 
 '''
@@ -79,24 +83,37 @@ plt.show()
 
 
 #Extracting the values from the dataframe
-array = dataset.values
-
+array = final_dataset.values
+print array[0]
 #Separating the features and the labels
-X = array [:,0:n_x]
+X = array[:,1:]
 Y = array[:,n_y]
-
-
+qid = array[:,24]
+print X[0], Y[0], qid[0]
 #Validation Size
 test_size = 0.3
 
 #Set the seed for randomness here
 seed = 7
-
+gkf = GroupKFold(n_splits=3)
 #Obtain the training and test sets
-X_train, X_test, Y_train, Y_test = model_selection.train_test_split(X, Y,
-	test_size = test_size, random_state = seed)
+#X_train, X_test, Y_train, Y_test = model_selection.train_test_split(X_qid_uniq,
+#	test_size = test_size, random_state = seed)
+X_train = []
+X_test = []
+Y_train = []
+Y_test = []
 
+#X_train, X_test, Y_train, Y_test = gkf.split(X,Y,groups = qid)
+splits = gkf.split(X,Y,groups = qid)
+cur_splits = splits.next()
+X_train = X[cur_splits[0]]
+X_test = X[cur_splits[1]]
+Y_train = Y[cur_splits[0]]
+Y_test = Y[cur_splits[1]]
 
+print X_train.shape, X_test.shape
+print Y_train.shape, Y_test.shape
 '''
 #Preparing the metrics for evaluation and cross-validation
 '''
@@ -113,15 +130,16 @@ scoring1 = 'f1_macro'
 #Load the models
 models = []
 
-models.append(('LR', LogisticRegression()))
-models.append(('LDA', LinearDiscriminantAnalysis()))
+#models.append(('LR', LogisticRegression()))
+#models.append(('LDA', LinearDiscriminantAnalysis()))
 #models.append(('SVM', LinearSVC(dual=False,class_weight = 'balanced')))
 #models.append(('dt', DecisionTreeClassifier(max_depth=4)))
 #models.append(('rf',RandomForestClassifier(n_estimators=1000)))
 #models.append(('CART', DecisionTreeClassifier()))
 #models.append(('KNN', KNeighborsClassifier()))
 #models.append(('SVM', SVC(kernel='rbf', probability=True)))
-
+#models.append(('SVR', SVR(kernel='linear', C=1e3)))
+models.append(('LinearRegression', linear_model.LinearRegression()))
 #Models_Evaluation
 models_eval=[]
 models_metrics=[]
@@ -130,9 +148,17 @@ models_metrics=[]
 results = []
 names = []
 cv_predict=[]
+# for i,value in enumerate(Y_train):
+# 	if Y_train[i] < 0.5:
+# 		Y_train[i] = 'false'
+# 	else:
+# 		Y_train[i] = 'true'
+#Y_train = np.asarray(Y_train, dtype="f4")
+#print Y_train
+#print len(Y_train),len(X_train)
 for name, model in models:
 	kfold = model_selection.KFold(n_splits=n_fold, random_state=cv_seed)
-	cv_results = model_selection.cross_val_score(model, X_train, Y_train, cv=n_fold, scoring=scoring)
+	cv_results = model_selection.cross_val_score(model, X_train[:,:-4], Y_train, cv=n_fold, scoring='mean_squared_error')
 	#predicted = cross_val_predict(model, X_train, Y_train, cv=10)
 	#cv_predict.append(*predicted)
 	#cv_results1= model_selection.cross_val_score(model, X_train, Y_train, cv=kfold, scoring=scoring)
@@ -157,16 +183,44 @@ for i in range(0,len(names)):
 	print names[i],"Accuracy is ", ac_score
 	print names[i], "Accuracy for whole dataset is ", ac_score1
 '''
+# X_true = []
+# Y_true = []
+# for i,value in enumerate(Y_test):
+# 	if Y_test[i] > 0.5:
+#  		Y_true.append(Y_test[i])
+#  		X_true.append(X_test[i])
+#Y_true = np.asarray(Y_true, dtype="|S6")
+#print "Actual values:"
+# print Y_true
+pred = []
 
 for i in range(0,len(names)):
-	models[i][1].fit(X_train, Y_train) 
-	pred = models[i][1].predict(X_test)
-	pred1 = models[i][1].predict(X)
-	ac_score = accuracy_score(Y_test, pred)
-	ac_score1 = accuracy_score(Y,pred1)
+	models[i][1].fit(X_train[:,:-4], Y_train) 
+	pred = models[i][1].predict(X_test[:,:-4])
+	print "Prediction"
+	print pred
+	#pred1 = models[i][1].predict(X)
+	#ac_score = accuracy_score(Y_test, pred)
+	ac_score = mean_squared_error(Y_test, pred)
+	#ac_score1 = accuracy_score(Y,pred1)
 	#conf_matrix = confusion_matrix(Y_test, predictions)
 	print names[i],"Accuracy is ", ac_score
-	print names[i], "Accuracy for whole dataset is ", ac_score1
+	#print names[i], "Accuracy for whole dataset is ", ac_score1
+
+	features = ['root match 1', 'sent_root_qs', 'qs_root_sent',  'n_wrds_l', 'n_wrds_r', 
+				'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf', 
+				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent_label', 'pos', 'ner', 'lemma', 'deptree_path', 'F1_score',
+				'span_words', 'q_words', 'ground_truth','predicted_F1_score']
+	combined_feature = []
+	for j,item in enumerate(X_test):
+		#print item
+		combined_feature.append(list(item))
+		combined_feature[j].append(float(pred[j]))
+	df = pandas.DataFrame.from_records(combined_feature, columns = features)
+	output_file_path = "../data/predictions/"
+	if not os.path.exists(output_file_path):
+		os.makedirs(output_file_path)
+	df.to_csv(os.path.join(output_file_path,names[i]+'_prediction.csv'))
 
 '''
 
