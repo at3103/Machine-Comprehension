@@ -55,7 +55,6 @@ def metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
         scores_for_ground_truths.append(score)
     return max(scores_for_ground_truths)
 
-
 def evaluate(ground_truths_dict, predictions):
     f1 = exact_match = total = 0
     for qa in ground_truths_dict.keys():
@@ -69,8 +68,8 @@ def evaluate(ground_truths_dict, predictions):
         prediction = predictions[qa]
         exact_match += metric_max_over_ground_truths(exact_match_score, prediction, ground_truths)
         f1 += metric_max_over_ground_truths(f1_score, prediction, ground_truths)
-    #print(total)
-    #print(exact_match)
+    print(total)
+    print(exact_match)
     exact_match = 100.0 * exact_match / total
     f1 = 100.0 * f1 / total
     return {'exact_match': exact_match, 'f1': f1}
@@ -78,14 +77,15 @@ def evaluate(ground_truths_dict, predictions):
 predictions_file_path = "../data/predictions/" 
 
 def get_max_predictions(prediction_dict):
-    max_predict = defaultdict(list)
-    for key in prediction_dict.keys():
-        max = [0.0,'']
+    max_predict = defaultdict(str)
+    for key in prediction_dict:
+        max = ['N','']
         predictions = prediction_dict[key]
         for prediction in predictions:
-            if prediction[0] > max[0] :
+            if prediction[0] == 'Y':
                 max = prediction
-
+            elif prediction[0] == 'M':
+                max[1] += ' '+prediction[1]
         max_predict[key] = max[1]
     return max_predict
 
@@ -100,7 +100,7 @@ def evaluate_ml_result(file):
         inputreader = csv.reader(csvfile, delimiter=',')
         inputreader.next()
         for row in inputreader:
-            predicted_F1_score = float(row[-1])
+            predicted_F1_score = str(row[-1])
             ground_truths = row[-2]
             qid = row[-3]
             constituent = str(row[-4])
@@ -110,7 +110,7 @@ def evaluate_ml_result(file):
             
             predictions_qid[str(qid)].append(prediction_list)
             #print(ground_truths)
-            list_gr_tr = ast.literal_eval(ground_truths)
+            list_gr_tr = ast.literal_eval(ground_truths)            
             qid_ground_truths[str(qid)] = list_gr_tr
 
     max_predict = get_max_predictions(predictions_qid)

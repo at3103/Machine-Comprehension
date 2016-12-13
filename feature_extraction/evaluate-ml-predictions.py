@@ -69,16 +69,16 @@ def evaluate(ground_truths_dict, predictions):
         prediction = predictions[qa]
         exact_match += metric_max_over_ground_truths(exact_match_score, prediction, ground_truths)
         f1 += metric_max_over_ground_truths(f1_score, prediction, ground_truths)
-    #print(total)
-    #print(exact_match)
+    print(total)
+    print(exact_match)
     exact_match = 100.0 * exact_match / total
     f1 = 100.0 * f1 / total
     return {'exact_match': exact_match, 'f1': f1}
 
-predictions_file_path = "../data/predictions/" 
+predictions_file_path = "../data/predictions/mlcp/new/" 
 
 def get_max_predictions(prediction_dict):
-    max_predict = defaultdict(list)
+    max_predict = defaultdict(str)
     for key in prediction_dict.keys():
         max = [0.0,'']
         predictions = prediction_dict[key]

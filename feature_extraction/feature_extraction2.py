@@ -308,8 +308,6 @@ def constituent_feature(constituent_label, q_pos, qid):
 		if re.match('W', pos_qs):
 			wh_tag = pos_qs  # re.split('W',)
 			break
-	if wh_tag == '':
-		print qid
 	if constituent_label in pos_dict.get(wh_tag, []):
 		return 1
 	else:
@@ -490,6 +488,8 @@ def parse_data(path):
 			
 			if file.find('_q') >= 0:
 				continue
+			# if file.find('.json')<0:
+			# 	continue	
 			print "Processing {0}".format(file)
 			try :
 				ans_features, q_features = parse_json(os.path.join(root, file))
@@ -651,4 +651,4 @@ def parse_data(path):
 Read in processed data from JSON, create features, save to CSV
 """
 if __name__ == '__main__':
-	parse_data("../data/processed/processed_train")
+	parse_data("../data/processed/processed_train1")
