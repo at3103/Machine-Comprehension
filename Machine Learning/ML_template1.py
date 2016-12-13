@@ -40,7 +40,7 @@ n_x = 22	#Columns which are considered features
 n_y = 22 # the column for label
 # Load dataset
 frames = []
-for i in xrange(1,50):
+for i in xrange(1,78):
 	url = "../data/featuredata/{0}.csv".format(i)
 	# names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 	dataset = pandas.read_csv(url)#, names=names)
@@ -84,12 +84,12 @@ print dataset.shape, dataset.ndim, len(dataset.shape) #, dataset.size#, dataset.
 
 #Extracting the values from the dataframe
 array = final_dataset.values
-print array[0]
+#print array[0]
 #Separating the features and the labels
 X = array[:,1:]
 Y = array[:,n_y]
 qid = array[:,24]
-print X[0], Y[0], qid[0]
+#print X[0], Y[0], qid[0]
 #Validation Size
 test_size = 0.3
 
@@ -137,9 +137,9 @@ models = []
 #models.append(('rf',RandomForestClassifier(n_estimators=1000)))
 #models.append(('CART', DecisionTreeClassifier()))
 #models.append(('KNN', KNeighborsClassifier()))
-#models.append(('SVM', SVC(kernel='rbf', probability=True)))
+#models.append(('SVM2_Smaller_Binary', SVC(kernel='rbf', probability=True)))
 #models.append(('SVR', SVR(kernel='linear', C=1e3)))
-models.append(('LinearRegression', linear_model.LinearRegression()))
+models.append(('LinearRegression_Large', linear_model.LinearRegression()))
 #Models_Evaluation
 models_eval=[]
 models_metrics=[]
@@ -149,16 +149,15 @@ results = []
 names = []
 cv_predict=[]
 # for i,value in enumerate(Y_train):
-# 	if Y_train[i] < 0.5:
-# 		Y_train[i] = 'false'
-# 	else:
-# 		Y_train[i] = 'true'
-#Y_train = np.asarray(Y_train, dtype="f4")
+#  	if Y_train[i] < 1.0:
+#  		Y_train[i] = 0.0
+# Y_train = np.asarray(Y_train, dtype="f4")
 #print Y_train
 #print len(Y_train),len(X_train)
 for name, model in models:
 	kfold = model_selection.KFold(n_splits=n_fold, random_state=cv_seed)
 	cv_results = model_selection.cross_val_score(model, X_train[:,:-4], Y_train, cv=n_fold, scoring='mean_squared_error')
+	#cv_results = model_selection.cross_val_score(model, X_train[:,:-4], Y_train, cv=n_fold, scoring=scoring)
 	#predicted = cross_val_predict(model, X_train, Y_train, cv=10)
 	#cv_predict.append(*predicted)
 	#cv_results1= model_selection.cross_val_score(model, X_train, Y_train, cv=kfold, scoring=scoring)
@@ -183,15 +182,11 @@ for i in range(0,len(names)):
 	print names[i],"Accuracy is ", ac_score
 	print names[i], "Accuracy for whole dataset is ", ac_score1
 '''
-# X_true = []
-# Y_true = []
 # for i,value in enumerate(Y_test):
-# 	if Y_test[i] > 0.5:
-#  		Y_true.append(Y_test[i])
-#  		X_true.append(X_test[i])
-#Y_true = np.asarray(Y_true, dtype="|S6")
-#print "Actual values:"
-# print Y_true
+#  	if Y_test[i] < 1.0:
+#  		Y_test[i] = 0.0
+# Y_test = np.asarray(Y_test, dtype="f4")
+
 pred = []
 
 for i in range(0,len(names)):

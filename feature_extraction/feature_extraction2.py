@@ -475,6 +475,7 @@ def parse_data(path):
 	written_files_path = "../data/featuredata/written_files.txt"
 	unwritten_files_path = "../data/featuredata/unwritten_files.txt"
 	written_files = []
+	already_written_files = []
 	if os.path.isfile(written_files_path): 
 		with open(written_files_path) as f:
 			already_written_files = f.read().splitlines()
@@ -521,7 +522,7 @@ def parse_data(path):
 				curr_question_pos	 = q_features[0].get('pos',[])[i]
 				curr_question_g_truth = q_features[0].get('ground_truth',[])[i]
 				qid = q_features[0].get('id','')[i]
-				print('Question ID: ' + str(qid))
+				#print('Question ID: ' + str(qid))
 
 				# Construct networkx graph from the deptree for the question
 				curr_question_graph = networkx.Graph()
