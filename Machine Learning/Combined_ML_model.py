@@ -61,6 +61,19 @@ for i in data_files:
 #Different buil-in functions of ndarray
 print final_dataset.shape, final_dataset.ndim, len(final_dataset.shape) #, dataset.size#, dataset.dtype, dataset.itemsize
 
+
+def get_max_predictions(prediction_dict):
+    max_predict = defaultdict(str)
+    for key in prediction_dict.keys():
+        max = [0.0,'']
+        predictions = prediction_dict[key]
+        for prediction in predictions:
+            if prediction[0] > max[0] :
+                max = prediction
+
+        max_predict[key] = max[1]
+    return max_predict
+
 #To take a quick peek
 #print dataset.head(20)
 
@@ -118,9 +131,21 @@ Y_test = []
 splits = gkf.split(X,Y,groups = qid)
 cur_splits = splits.next()
 X_train = X[cur_splits[0]]
-X_test = X[cur_splits[1]]
+X_test1 = X[cur_splits[1]]
 Y_train = Y[cur_splits[0]]
-Y_test = Y[cur_splits[1]]
+Y_test1 = Y[cur_splits[1]]
+
+qid=X_test1[:,24]
+splits = gkf.split(X_test1,Y_test1,groups = qid)
+cur_splits = splits.next()
+
+print X_train.shape, X_test1[cur_splits[0]].shape
+print Y_train.shape, Y_test1[cur_splits[0]].shape
+
+X_train = (np.concatenate((X_train.T, X_test1[cur_splits[0]].T),axis = 1)).T
+X_test = X_test1[cur_splits[1]]
+Y_train = (np.concatenate((Y_train,Y_test1[cur_splits[0]])))
+Y_test = Y_test1[cur_splits[1]]
 
 print X_train.shape, X_test.shape
 print Y_train.shape, Y_test.shape
@@ -155,13 +180,107 @@ print Y_train.shape, Y_test.shape
 
 #Evaluation metrics and test options
 
+# features = ['root match 1', 'sent_root_qs', 'qs_root_sent',  'n_wrds_l', 'n_wrds_r', 
+# 					'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf', 
+# 					'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent_label', 'pos', 'ner', 'lemma', 'deptree_path', 'F1_score',
+# 					'span_words', 'q_words', 'ground_truth','predicted_F1_score']
+
+
+w= {'LinearRegression':0.25, 'BayesianRegression':0.25,'MLPRegressor1':0.10, 'MLPRegressor2':0.10, 'GradientBoostingRegressor': 0.10, 'LinearSVR':0.20 }
+
+models = []
+models.append(('LinearRegression', linear_model.LinearRegression()))
+models.append(('BayesianRegression', linear_model.BayesianRidge()))
+models.append(('MLPRegressor1',MLPRegressor(activation='relu', alpha=1e-05, batch_size=500,
+		       beta_1=0.9, beta_2=0.1, early_stopping=False,
+		       epsilon=1, hidden_layer_sizes=(12, 6), learning_rate='adaptive',
+		       learning_rate_init=0.01, max_iter=2000, momentum=0.9,
+		       nesterovs_momentum=True, power_t=0.5, random_state=1, shuffle=True,
+		       solver='adam', tol=0.0001, validation_fraction=0.1, verbose=False,
+		       warm_start=False)))
+models.append(('MLPRegressor2',MLPRegressor(activation='relu', alpha=1e-05, batch_size=500,
+		       beta_1=0.9, beta_2=0.1, early_stopping=False,
+		       epsilon=0.8, hidden_layer_sizes=(12, 6), learning_rate='adaptive',
+		       learning_rate_init=0.02, max_iter=2000, momentum=0.9,
+		       nesterovs_momentum=True, power_t=0.5, random_state=1, shuffle=True,
+		       solver='adam', tol=0.0001, validation_fraction=0.1, verbose=False,
+		       warm_start=False)))
+models.append(('GradientBoostingRegressor', GradientBoostingRegressor(n_estimators=100, learning_rate=0.02,
+				max_depth=1, random_state=1, loss='ls')))
+models.append((('LinearSVR',LinearSVR(epsilon=0.0, tol=0.0001, C=1.0, loss='epsilon_insensitive',
+				fit_intercept=True, intercept_scaling=1.0, dual=True, verbose=0, 
+				random_state=None, max_iter=1000))))
+
+names=[]
+for name, model in models:
+	names.append(name)
+
+pred = []
+models_combined_features={}
+for k in range(15,n_x-1):
+	for i in range(0,len(names)):
+		models[i][1].fit(X_train[:,k:-4], Y_train) 
+		pred = models[i][1].predict(X_test[:,k:-4])
+		ac_score = mean_squared_error(Y_test, pred)
+		print names[i],"Accuracy is ", ac_score, "k = ", k
+		features = ['span_words', 'q_words', 'ground_truth','predicted_F1_score']
+		combined_feature = []
+		for j,item in enumerate(X_test[:,-3:]):
+			combined_feature.append(list(item))
+			combined_feature[j].append((pred[j]))
+		models_combined_features[names[i]] = combined_feature[:][:-2] + combined_feature[:][-1]
+		df = pandas.DataFrame.from_records(combined_feature, columns = features)
+		output_file_path = "../data/predictions/lr_combined_fdata/next/"
+		if not os.path.exists(output_file_path):
+			os.makedirs(output_file_path)
+		df.to_csv(os.path.join(output_file_path,names[i]+'_prediction_'+str(k)+'.csv'))
+
+for i,item in enumerate(combined_feature):
+	combined_feature.append(list(item))
+	combined_feature[j].append((pred[j]))
+
+d={}
+for keys in models_combined_features.keys():
+	d[keys] = []
+
+combined_pred=[]
+
+for n in range(X_test):
+	for keys in models_combined_features.keys():
+		combined_pred[n] = w[keys] * float(models_combined_features[keys][n])	    
+
+for j,item in enumerate(X_test[:,-3:]):
+			combined_feature.append(list(item))
+			combined_feature[j].append((combined_pred[j]))
+df = pandas.DataFrame.from_records(combined_feature, columns = features)
+output_file_path = "../data/predictions/lr_combined_fdata/"
+if not os.path.exists(output_file_path):
+	os.makedirs(output_file_path)
+df.to_csv(os.path.join(output_file_path,'Combined_prediction_'+str(k)+'.csv'))
+
+# 	    predicted_F1_score = float(row[-1])
+# 	    qid = row[-2]
+# 	    constituent = str(row[0])
+# 	    prediction_list = list()
+# 	    prediction_list.append(predicted_F1_score)
+# 	    prediction_list.append(constituent)
+# 	    d[keys].append(prediction_list)
+# 	    predictions_qid[str(qid)].append(d[keys])
+
+# 	    list_gr_tr = ast.literal_eval(ground_truths)
+# 	    qid_ground_truths[str(qid)] = list_gr_tr
+
+# max_predict = get_max_predictions(predictions_qid)
+# print("{0} questions evaluated".format(len(predictions_qid)))
+# print(evaluate(qid_ground_truths,max_predict))
+
+
+
 cv_seed = 7
 n_fold = 10
 num_of_instances = len(X_train)
 scoring = 'accuracy'
 scoring1 = 'f1_macro'
-
-
 #Load the models
 models = []
 
@@ -218,29 +337,6 @@ for i in range(0,len(names)):
 #Y_true = np.asarray(Y_true, dtype="|S6")
 #print "Actual values:"
 # print Y_true
-pred = []
-for k in range(0,n_x):
-	for i in range(0,len(names)):
-		models[i][1].fit(X_train[:,k:-4], Y_train) 
-		pred = models[i][1].predict(X_test[:,k:-4])
-		print "Prediction"
-		print pred
-		ac_score = mean_squared_error(Y_test, pred)
-		print names[i],"Accuracy is ", ac_score
-
-		features = ['root match 1', 'sent_root_qs', 'qs_root_sent',  'n_wrds_l', 'n_wrds_r', 
-					'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf', 
-					'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent_label', 'pos', 'ner', 'lemma', 'deptree_path', 'F1_score',
-					'span_words', 'q_words', 'ground_truth','predicted_F1_score']
-		combined_feature = []
-		for j,item in enumerate(X_test):
-			combined_feature.append(list(item))
-			combined_feature[j].append((pred[j]))
-		df = pandas.DataFrame.from_records(combined_feature, columns = features)
-		output_file_path = "../data/predictions/lr_new_total_data/"
-		if not os.path.exists(output_file_path):
-			os.makedirs(output_file_path)
-		df.to_csv(os.path.join(output_file_path,names[i]+'_predictionb_'+str(k)+'.csv'))
 
 '''
 

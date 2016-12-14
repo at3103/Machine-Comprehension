@@ -11,7 +11,8 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import mean_squared_error
-
+from os import listdir
+from os.path import isfile, join
 from sklearn.model_selection import cross_val_predict
 from sklearn.model_selection import GroupKFold
 from sklearn.neural_network import MLPClassifier
@@ -24,23 +25,23 @@ import pandas
 import numpy as np
 import os
 
-#To check the version of python
-#print "Python : {}".format(sys.version)
-	
 n_x = 22	#Columns which are considered features
 n_y = 22 # the column for label
 
 # Load dataset
 frames = []
-for i in xrange(1,38):
-	url = "../data/featuredata/{0}.csv".format(i)
+
+data_file_path = "../data/featuredata_br/"
+data_files = [f for f in listdir(data_file_path) if isfile(join(data_file_path, f)) and f.endswith('.csv')]
+for i in data_files:
+	url = data_file_path + i
 	# names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 	dataset = pandas.read_csv(url)#, names=names)
 	frames.append(dataset)
 	final_dataset = pd.concat(frames)
 
 #Different buil-in functions of ndarray
-print dataset.shape, dataset.ndim, len(dataset.shape) #, dataset.size#, dataset.dtype, dataset.itemsize
+print final_dataset.shape, final_dataset.ndim, len(final_dataset.shape) #, dataset.size#, dataset.dtype, dataset.itemsize
 
 #Extracting the values from the dataframe
 array = final_dataset.values
@@ -99,29 +100,11 @@ Y_test = Y[cur_splits[1]]
 #Preparing the metrics for evaluation and cross-validation
 '''
 
-#Evaluation metrics and test options
-
-cv_seed = 7
-n_fold = 10
-num_of_instances = len(X_train)
-scoring = 'accuracy'
-scoring1 = 'f1_macro'
-
-
-#Load the models
-models = []
-
 i =1
-alph = [1e-01,1e-02,1e-03,1e-04,1e-05,1e-07,1,0.5,0.000004]
-lrn = [0.00001, 0.0001, 0.001, 0.01, 0.1, 0.002,0.4,0.3,0.0000006]
+alph = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4]
+lrn = [ 0.01, 0.02, 0.03, 0.00001, 0.0001]
 for a in alph:
 	for l in lrn:
-
-	# clf = SGDRegressor(alpha=alph, average=False, epsilon=0.1, eta0=0.01,
- #         fit_intercept=True, l1_ratio=0.15, learning_rate='invscaling',
- #         loss='squared_loss', n_iter=5, penalty='l2', power_t=0.25,
- #         random_state=None, shuffle=True, verbose=0, warm_start=False)
-
 		clf = MLPRegressor(activation='relu', alpha=1e-05, batch_size=500,
 		       beta_1=0.9, beta_2=0.1, early_stopping=False,
 		       epsilon=a, hidden_layer_sizes=(12, 6), learning_rate='adaptive',
@@ -130,10 +113,8 @@ for a in alph:
 		       solver='adam', tol=0.0001, validation_fraction=0.1, verbose=False,
 		       warm_start=False)
 
-		#Y_train.reshape(Y_train.ndim,1)
 		clf.fit(X_train[:,:-4], Y_train)
 		pred = clf.predict(X_test[:,:-4])
-		#print "Accuracy of clf BoM is ", accuracy_score(Y_test, pred_nn_bom)
 		combined_feature = []
 		for j,item in enumerate(X_test):
 			combined_feature.append(list(item))
@@ -152,5 +133,5 @@ for a in alph:
 		output_file_path = "../data/predictions/mlcp/new"
 		if not os.path.exists(output_file_path):
 			os.makedirs(output_file_path)
-		df.to_csv(os.path.join(output_file_path,'MLP_prediction_alph'+str(a)+"_"+ str(l)'.csv'))
+		df.to_csv(os.path.join(output_file_path,'MLP_prediction_alph'+str(a)+"_"+ str(l) + '.csv'))
 		i += 1
