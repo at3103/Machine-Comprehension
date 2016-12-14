@@ -186,11 +186,9 @@ results = []
 names = []
 cv_predict=[]
 # for i,value in enumerate(Y_train):
-# 	if Y_train[i] < 0.5:
-# 		Y_train[i] = 'false'
-# 	else:
-# 		Y_train[i] = 'true'
-#Y_train = np.asarray(Y_train, dtype="f4")
+#  	if Y_train[i] < 1.0:
+#  		Y_train[i] = 0.0
+# Y_train = np.asarray(Y_train, dtype="f4")
 #print Y_train
 #print len(Y_train),len(X_train)
 for name, model in models:
@@ -209,15 +207,11 @@ for i in range(0,len(names)):
 	print names[i],"Accuracy is ", ac_score
 	print names[i], "Accuracy for whole dataset is ", ac_score1
 '''
-# X_true = []
-# Y_true = []
 # for i,value in enumerate(Y_test):
-# 	if Y_test[i] > 0.5:
-#  		Y_true.append(Y_test[i])
-#  		X_true.append(X_test[i])
-#Y_true = np.asarray(Y_true, dtype="|S6")
-#print "Actual values:"
-# print Y_true
+#  	if Y_test[i] < 1.0:
+#  		Y_test[i] = 0.0
+# Y_test = np.asarray(Y_test, dtype="f4")
+
 pred = []
 for k in range(0,n_x):
 	for i in range(0,len(names)):
