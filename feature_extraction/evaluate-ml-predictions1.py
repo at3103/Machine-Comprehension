@@ -11,6 +11,7 @@ from os.path import isfile, join
 import csv
 from collections import defaultdict
 import ast
+import random 
 
 def normalize_answer(s):
     """Lower text and remove punctuation, articles and extra whitespace."""
@@ -74,7 +75,7 @@ def evaluate(ground_truths_dict, predictions):
     f1 = 100.0 * f1 / total
     return {'exact_match': exact_match, 'f1': f1}
 
-predictions_file_path = "../data/predictions/" 
+predictions_file_path = "../data/predictions/classification/" 
 
 def get_max_predictions(prediction_dict):
     max_predict = defaultdict(str)
@@ -84,8 +85,12 @@ def get_max_predictions(prediction_dict):
         for prediction in predictions:
             if prediction[0] == 'Y':
                 max = prediction
-            elif prediction[0] == 'M':
-                max[1] += ' '+prediction[1]
+                break
+            if prediction[0] == 'M':
+                if len(max[1]) > len(prediction[1]):
+                    max = prediction
+        if max[0] == 'N':
+            max = random.choice(predictions)
         max_predict[key] = max[1]
     return max_predict
 
@@ -112,7 +117,6 @@ def evaluate_ml_result(file):
             #print(ground_truths)
             list_gr_tr = ast.literal_eval(ground_truths)            
             qid_ground_truths[str(qid)] = list_gr_tr
-
     max_predict = get_max_predictions(predictions_qid)
     print("{0} questions evaluated".format(len(predictions_qid)))
     print(evaluate(qid_ground_truths,max_predict))

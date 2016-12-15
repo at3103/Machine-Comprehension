@@ -1,0 +1,316 @@
+Ashwins-MacBook-Pro:feature_extraction atamilse$ python evaluate-ml-predictions1.py 
+Evaluating LDA0.csv file
+7438 questions evaluated
+7438
+378
+{'f1': 9.00537127486919, 'exact_match': 5.08201129335843}
+Evaluating LDA1.csv file
+7438 questions evaluated
+7438
+392
+{'f1': 9.17526679867059, 'exact_match': 5.270233933853186}
+Evaluating LDA10.csv file
+7438 questions evaluated
+7438
+352
+{'f1': 8.686809620194564, 'exact_match': 4.732454961011024}
+Evaluating LDA11.csv file
+7438 questions evaluated
+7438
+358
+{'f1': 8.787322536060332, 'exact_match': 4.813121806937349}
+Evaluating LDA12.csv file
+7438 questions evaluated
+7438
+352
+{'f1': 8.428958096109543, 'exact_match': 4.732454961011024}
+Evaluating LDA13.csv file
+7438 questions evaluated
+7438
+366
+{'f1': 8.859587587089303, 'exact_match': 4.920677601505781}
+Evaluating LDA14.csv file
+7438 questions evaluated
+7438
+352
+{'f1': 8.334004102291544, 'exact_match': 4.732454961011024}
+Evaluating LDA15.csv file
+7438 questions evaluated
+7438
+346
+{'f1': 8.304678478089379, 'exact_match': 4.6517881150847}
+Evaluating LDA16.csv file
+7438 questions evaluated
+7438
+344
+{'f1': 8.207349983819466, 'exact_match': 4.624899166442592}
+Evaluating LDA17.csv file
+7438 questions evaluated
+7438
+371
+{'f1': 8.832685080057825, 'exact_match': 4.987899973111051}
+Evaluating LDA18.csv file
+7438 questions evaluated
+7438
+354
+{'f1': 8.381304727513113, 'exact_match': 4.759343909653133}
+Evaluating LDA19.csv file
+7438 questions evaluated
+7438
+68
+{'f1': 5.873235157340618, 'exact_match': 0.9142242538316752}
+Evaluating LDA2.csv file
+7438 questions evaluated
+7438
+374
+{'f1': 8.896203644114793, 'exact_match': 5.028233396074214}
+Evaluating LDA20.csv file
+7438 questions evaluated
+7438
+56
+{'f1': 5.521322504994184, 'exact_match': 0.7528905619790266}
+Evaluating LDA3.csv file
+7438 questions evaluated
+7438
+377
+{'f1': 9.047747381451357, 'exact_match': 5.068566819037375}
+Evaluating LDA4.csv file
+7438 questions evaluated
+7438
+373
+{'f1': 8.978307813394858, 'exact_match': 5.014788921753159}
+Evaluating LDA5.csv file
+7438 questions evaluated
+7438
+366
+{'f1': 8.916937703420484, 'exact_match': 4.920677601505781}
+Evaluating LDA6.csv file
+7438 questions evaluated
+7438
+369
+{'f1': 8.840658186748708, 'exact_match': 4.961011024468943}
+Evaluating LDA7.csv file
+7438 questions evaluated
+7438
+364
+{'f1': 8.84449642860577, 'exact_match': 4.893788652863673}
+Evaluating LDA8.csv file
+7438 questions evaluated
+7438
+360
+{'f1': 8.67839422575902, 'exact_match': 4.840010755579457}
+Evaluating LDA9.csv file
+7438 questions evaluated
+7438
+363
+{'f1': 8.877326416974084, 'exact_match': 4.880344178542619}
+Evaluating LR0.csv file
+7438 questions evaluated
+7438
+68
+{'f1': 5.66805445164133, 'exact_match': 0.9142242538316752}
+Evaluating LR1.csv file
+7438 questions evaluated
+7438
+69
+{'f1': 5.896978176886138, 'exact_match': 0.9276687281527293}
+Evaluating LR10.csv file
+7438 questions evaluated
+7438
+58
+{'f1': 5.768865596525272, 'exact_match': 0.7797795106211347}
+Evaluating LR11.csv file
+7438 questions evaluated
+7438
+60
+{'f1': 5.609982595935125, 'exact_match': 0.8066684592632428}
+Evaluating LR12.csv file
+7438 questions evaluated
+7438
+64
+{'f1': 5.8560814372733345, 'exact_match': 0.860446356547459}
+Evaluating LR13.csv file
+7438 questions evaluated
+7438
+64
+{'f1': 5.844281479729737, 'exact_match': 0.860446356547459}
+Evaluating LR14.csv file
+7438 questions evaluated
+7438
+60
+{'f1': 5.456489630710511, 'exact_match': 0.8066684592632428}
+Evaluating LR15.csv file
+7438 questions evaluated
+7438
+69
+{'f1': 5.676423491772804, 'exact_match': 0.9276687281527293}
+Evaluating LR16.csv file
+7438 questions evaluated
+7438
+57
+{'f1': 5.67319675340467, 'exact_match': 0.7663350363000807}
+Evaluating LR17.csv file
+7438 questions evaluated
+7438
+64
+{'f1': 5.196106405636027, 'exact_match': 0.860446356547459}
+Evaluating LR18.csv file
+7438 questions evaluated
+7438
+61
+{'f1': 5.744854747007714, 'exact_match': 0.8201129335842968}
+Evaluating LR19.csv file
+7438 questions evaluated
+7438
+38
+{'f1': 5.171885189651876, 'exact_match': 0.5108900242000538}
+Evaluating LR2.csv file
+7438 questions evaluated
+7438
+70
+{'f1': 5.845424119423587, 'exact_match': 0.9411132024737833}
+Evaluating LR20.csv file
+7438 questions evaluated
+7438
+70
+{'f1': 5.832721916928208, 'exact_match': 0.9411132024737833}
+Evaluating LR3.csv file
+7438 questions evaluated
+7438
+66
+{'f1': 5.522671217279064, 'exact_match': 0.887335305189567}
+Evaluating LR4.csv file
+7438 questions evaluated
+7438
+72
+{'f1': 5.4484114786349425, 'exact_match': 0.9680021511158914}
+Evaluating LR5.csv file
+7438 questions evaluated
+7438
+47
+{'f1': 5.169481181457457, 'exact_match': 0.6318902930895401}
+Evaluating LR6.csv file
+7438 questions evaluated
+7438
+71
+{'f1': 5.641200095828499, 'exact_match': 0.9545576767948373}
+Evaluating LR7.csv file
+7438 questions evaluated
+7438
+60
+{'f1': 5.6688291169850435, 'exact_match': 0.8066684592632428}
+Evaluating LR8.csv file
+7438 questions evaluated
+7438
+64
+{'f1': 5.565735626966117, 'exact_match': 0.860446356547459}
+Evaluating LR9.csv file
+7438 questions evaluated
+7438
+68
+{'f1': 5.699998431523374, 'exact_match': 0.9142242538316752}
+Evaluating SVM0.csv file
+7438 questions evaluated
+7438
+58
+{'f1': 5.541328502956537, 'exact_match': 0.7797795106211347}
+Evaluating SVM1.csv file
+7438 questions evaluated
+7438
+41
+{'f1': 5.3090041420596785, 'exact_match': 0.5512234471632159}
+Evaluating SVM10.csv file
+7438 questions evaluated
+7438
+53
+{'f1': 5.379821936122188, 'exact_match': 0.7125571390158645}
+Evaluating SVM11.csv file
+7438 questions evaluated
+7438
+58
+{'f1': 5.589941073993346, 'exact_match': 0.7797795106211347}
+Evaluating SVM12.csv file
+7438 questions evaluated
+7438
+57
+{'f1': 5.367085918124967, 'exact_match': 0.7663350363000807}
+Evaluating SVM13.csv file
+7438 questions evaluated
+7438
+60
+{'f1': 5.635577296321357, 'exact_match': 0.8066684592632428}
+Evaluating SVM14.csv file
+7438 questions evaluated
+7438
+62
+{'f1': 5.514616970586959, 'exact_match': 0.8335574079053509}
+Evaluating SVM15.csv file
+7438 questions evaluated
+7438
+57
+{'f1': 5.594397274430286, 'exact_match': 0.7663350363000807}
+Evaluating SVM16.csv file
+7438 questions evaluated
+7438
+66
+{'f1': 5.322249307294269, 'exact_match': 0.887335305189567}
+Evaluating SVM17.csv file
+7438 questions evaluated
+7438
+45
+{'f1': 5.529964178083933, 'exact_match': 0.6050013444474321}
+Evaluating SVM18.csv file
+7438 questions evaluated
+7438
+62
+{'f1': 5.517260464006934, 'exact_match': 0.8335574079053509}
+Evaluating SVM19.csv file
+7438 questions evaluated
+7438
+58
+{'f1': 5.616472496385888, 'exact_match': 0.7797795106211347}
+Evaluating SVM2.csv file
+7438 questions evaluated
+7438
+47
+{'f1': 5.3282096924346956, 'exact_match': 0.6318902930895401}
+Evaluating SVM20.csv file
+7438 questions evaluated
+7438
+76
+{'f1': 5.8831748917899285, 'exact_match': 1.0217800484001076}
+Evaluating SVM3.csv file
+7438 questions evaluated
+7438
+59
+{'f1': 5.503770032731151, 'exact_match': 0.7932239849421887}
+Evaluating SVM4.csv file
+7438 questions evaluated
+7438
+67
+{'f1': 5.61877769912594, 'exact_match': 0.9007797795106212}
+Evaluating SVM5.csv file
+7438 questions evaluated
+7438
+57
+{'f1': 5.526062369838509, 'exact_match': 0.7663350363000807}
+Evaluating SVM6.csv file
+7438 questions evaluated
+7438
+62
+{'f1': 5.630478479570802, 'exact_match': 0.8335574079053509}
+Evaluating SVM7.csv file
+7438 questions evaluated
+7438
+65
+{'f1': 5.886000762162307, 'exact_match': 0.873890830868513}
+Evaluating SVM8.csv file
+7438 questions evaluated
+7438
+62
+{'f1': 5.584491978227781, 'exact_match': 0.8335574079053509}
+Evaluating SVM9.csv file
+7438 questions evaluated
+7438
+65
+{'f1': 5.79073109648446, 'exact_match': 0.873890830868513}

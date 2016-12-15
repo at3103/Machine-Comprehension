@@ -1,0 +1,149 @@
+dyn-160-39-228-148:Machine Learning atamilse$ python RandomForestRegressor.py 
+(3599428, 26) 2 2
+(1799713, 25) (899865, 25)
+(1799713,) (899865,)
+(2699578, 25) (899850, 25)
+(2699578,) (899850,)
+RandomForestRegressor MSE is  0.0231722644369
+RandomForestRegressor MSE is  0.0228822889187
+RandomForestRegressor MSE is  0.0227449201051
+RandomForestRegressor MSE is  0.0225571441963
+RandomForestRegressor MSE is  0.0224276693115
+RandomForestRegressor MSE is  0.0223509301145
+******************************************************
+
+dyn-160-39-228-148:Machine Learning atamilse$ python RandomForestRegressor.py 
+(3599428, 26) 2 2
+(1799713, 25) (899865, 25)
+(1799713,) (899865,)
+(2699578, 25) (899850, 25)
+(2699578,) (899850,)
+RandomForestRegressor MSE is  0.0213228246535
+RandomForestRegressor MSE is  0.0211703403057
+RandomForestRegressor MSE is  0.0211042892494
+RandomForestRegressor MSE is  0.0210612126301
+RandomForestRegressor MSE is  0.0210104046771
+RandomForestRegressor MSE is  0.0210060739696
+
+
+*******************************************************
+Evaluating RandomForestRegressor_prediction_10.csv file
+7952 questions evaluated
+7952
+764
+{'f1': 21.5715141787323, 'exact_match': 9.607645875251508}
+
+Evaluating RandomForestRegressor_prediction_11.csv file
+7952 questions evaluated
+7952
+787
+{'f1': 22.205109869950345, 'exact_match': 9.896881287726359}
+
+Evaluating RandomForestRegressor_prediction_12.csv file
+7952 questions evaluated
+7952
+808
+{'f1': 22.44680285671237, 'exact_match': 10.160965794768611}
+
+Evaluating RandomForestRegressor_prediction_13.csv file
+7952 questions evaluated
+7952
+821
+{'f1': 23.236660636028578, 'exact_match': 10.324446680080483}
+
+Evaluating RandomForestRegressor_prediction_14.csv file
+7952 questions evaluated
+7952
+822
+{'f1': 22.85880016243985, 'exact_match': 10.33702213279678}
+
+Evaluating RandomForestRegressor_prediction_15.csv file
+7952 questions evaluated
+7952
+845
+{'f1': 23.110445511514506, 'exact_match': 10.62625754527163}
+
+Evaluating RandomForestRegressor_prediction_16.csv file
+7952 questions evaluated
+7952
+840
+{'f1': 23.435218641660825, 'exact_match': 10.56338028169014}
+
+Evaluating RandomForestRegressor_prediction_17.csv file
+7952 questions evaluated
+7952
+871
+{'f1': 23.571515930507324, 'exact_match': 10.953219315895373}
+
+Evaluating RandomForestRegressor_prediction_18.csv file
+7952 questions evaluated
+7952
+830
+{'f1': 23.242435652693906, 'exact_match': 10.437625754527163}
+Evaluating RandomForestRegressor_prediction_19.csv file
+7952 questions evaluated
+7952
+851
+{'f1': 23.65781405857943, 'exact_match': 10.701710261569417}
+
+Ashwins-MacBook-Pro:feature_extraction atamilse$ python evaluate-ml-predictions.py
+Evaluating RandomForestRegressor_prediction_50.csv file
+7952 questions evaluated
+7952
+961
+{'f1': 25.21270192219041, 'exact_match': 12.085010060362173}
+
+Evaluating RandomForestRegressor_prediction_70.csv file
+7952 questions evaluated
+7952
+970
+{'f1': 25.732914910700362, 'exact_match': 12.198189134808853}
+
+Evaluating RandomForestRegressor_prediction_90.csv file
+7952 questions evaluated
+7952
+952
+{'f1': 25.327557650712603, 'exact_match': 11.971830985915492}
+
+
+Ashwins-MacBook-Pro:feature_extraction atamilse$ python evaluate-ml-predictions.py
+Evaluating RandomForestRegressor_prediction_110.csv file
+7952 questions evaluated
+7952
+989
+{'f1': 25.843349370421443, 'exact_match': 12.43712273641851}
+Evaluating RandomForestRegressor_prediction_130.csv file
+7952 questions evaluated
+7952
+975
+{'f1': 25.48439194835979, 'exact_match': 12.261066398390343}
+Evaluating RandomForestRegressor_prediction_150.csv file
+7952 questions evaluated
+7952
+991
+{'f1': 25.624163528761706, 'exact_match': 12.462273641851107}
+
+Best:
+
+
+Ashwins-MacBook-Pro:feature_extraction atamilse$ python evaluate-ml-predictions.py
+Evaluating RandomForestRegressor_prediction_110.csv file
+7952 questions evaluated
+7952
+989
+{'f1': 25.843349370421443, 'exact_match': 12.43712273641851}
+
+Evaluating RandomForestRegressor_prediction_150.csv file
+7952 questions evaluated
+7952
+991
+{'f1': 25.624163528761706, 'exact_match': 12.462273641851107}
+
+Evaluating RandomForestRegressor_prediction_70.csv file
+7952 questions evaluated
+7952
+970
+{'f1': 25.732914910700362, 'exact_match': 12.198189134808853}
+
+
+n_estimators = 110/150

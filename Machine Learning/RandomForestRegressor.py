@@ -19,7 +19,7 @@ from sklearn import linear_model
 from sklearn.ensemble import AdaBoostRegressor
 import numpy as np
 from collections import defaultdict
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 	
 n_x = 22	#Columns which are considered features
 n_y = 22 # the column for label
@@ -81,8 +81,8 @@ print Y_train.shape, Y_test.shape
 
 
 pred = []
-for n in range(10,20):
-	reg = RandomForestClassifier(n_estimators=n, n_jobs = -1)
+for n in range(50,500,20):
+	reg = RandomForestRegressor(n_estimators=n, n_jobs = -1)
 	reg.fit(X_train[:,:-4], Y_train) 
 	pred = reg.predict(X_test[:,:-4])
 	ac_score = mean_squared_error(Y_test, pred)
