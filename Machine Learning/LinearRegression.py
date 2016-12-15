@@ -29,7 +29,6 @@ data_file_path = "../data/featuredata_br/"
 data_files = [f for f in listdir(data_file_path) if isfile(join(data_file_path, f)) and f.endswith('.csv')]
 for i in data_files:
 	url = data_file_path + i
-	# names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 	dataset = pd.read_csv(url)#, names=names)
 	frames.append(dataset)
 	final_dataset = pd.concat(frames)
@@ -42,12 +41,17 @@ array = final_dataset.values
 
 #Separating the features and the labels
 array = final_dataset.values
-#print array[0]
+
 #Separating the features and the labels
 X = array[:,1:]
 Y = array[:,n_y]
 qid = array[:,24]
 #print X[0], Y[0], qid[0]
+
+
+
+for i in range(len(Y)):
+	Y[i] = float(Y[i]) * 100
 
 
 #Set the seed for randomness here
@@ -101,27 +105,23 @@ print Y_train.shape, Y_test.shape
 # 	else:
 # 		Y_test[i] = 'N'
 
-lrn = [0.00001, 0.0001, 0.001, 0.01, 0.1, 0.002]
-for e in lrn:
-	for k in range(0,n_x-1):
-		clf = LinearSVR(epsilon=e, tol=0.0001, C=1.0, loss='epsilon_insensitive', 
-		fit_intercept=True, intercept_scaling=1.0, dual=True, verbose=0, 
-		random_state=1, max_iter=2000)
-		clf.fit(X_train[:,k:-4], Y_train)
-		pred = clf.predict(X_test[:,k:-4])
-		ac_score = mean_squared_error(Y_test, pred)
+for k in range(0,n_x-1):
+	clf = linear_model.LinearRegression()
+	clf.fit(X_train[:,k:-4], Y_train)
+	pred = clf.predict(X_test[:,k:-4])
+	ac_score = mean_squared_error(Y_test, pred)
 
-		print "LSVRegressor Accuracy is ", ac_score, "epsilon is", e
+	print "Linear Regressor MSE is ", ac_score, "K is ", k
 
-		features = ['span_words', 'q_words', 'ground_truth','predicted_F1_score']
-		combined_feature = []
-		for j,item in enumerate(X_test[:,-3:]):
-			combined_feature.append(list(item))
-			combined_feature[j].append((pred[j]))
+	features = ['span_words', 'q_words', 'ground_truth','predicted_F1_score']
+	combined_feature = []
+	for j,item in enumerate(X_test[:,-3:]):
+		combined_feature.append(list(item))
+		combined_feature[j].append((pred[j]))
 
-		df = pd.DataFrame.from_records(combined_feature, columns = features)
-		output_file_path = "../data/predictions/lsvr/"
-		if not os.path.exists(output_file_path):
-			os.makedirs(output_file_path)
-		df.to_csv(os.path.join(output_file_path,"LSVR_prediction_eps_"+str(e) + "_" + str(k)+".csv"))
+	df = pd.DataFrame.from_records(combined_feature, columns = features)
+	output_file_path = "../data/predictions/lr/"
+	if not os.path.exists(output_file_path):
+		os.makedirs(output_file_path)
+	df.to_csv(os.path.join(output_file_path,"LR_prediction_k_"+ str(k)+".csv"))
 

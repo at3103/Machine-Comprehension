@@ -38,6 +38,7 @@ import numpy as np
 import os
 from os import listdir
 from os.path import isfile, join
+from collections import defaultdict
 
 
 #To check the version of python
@@ -216,7 +217,7 @@ for name, model in models:
 	names.append(name)
 
 pred = []
-models_combined_features={}
+models_combined_features=defaultdict(dict)
 for k in range(15,n_x-1):
 	for i in range(0,len(names)):
 		models[i][1].fit(X_train[:,k:-4], Y_train) 
@@ -225,10 +226,15 @@ for k in range(15,n_x-1):
 		print names[i],"Accuracy is ", ac_score, "k = ", k
 		features = ['span_words', 'q_words', 'ground_truth','predicted_F1_score']
 		combined_feature = []
+		combined_dict = defaultdict(list)
 		for j,item in enumerate(X_test[:,-3:]):
 			combined_feature.append(list(item))
 			combined_feature[j].append((pred[j]))
-		models_combined_features[names[i]] = combined_feature[:][:-2] + combined_feature[:][-1]
+			#combined_dict[item[1]].append([item[0],pred[j]])
+			combined_dict[names[i] + str(k)] = [item[0],pred[j]]
+			models_combined_features[item[1]].append(combined_dict)
+		#models_combined_features[names[i]] = combined_feature[:][:-2] + combined_feature[:][-1]
+		models_combined_features[names[i] + str(k)] = combined_dict
 		df = pandas.DataFrame.from_records(combined_feature, columns = features)
 		output_file_path = "../data/predictions/lr_combined_fdata/next/"
 		if not os.path.exists(output_file_path):
