@@ -236,3 +236,41 @@ i is  78  Learning rate:  0.002  Alpha is  4e-06
 i is  79  Learning rate:  0.4  Alpha is  4e-06
 i is  80  Learning rate:  0.3  Alpha is  4e-06
 i is  81  Learning rate:  6e-07  Alpha is  4e-06
+
+
+
+
+i is  1  Learning rate:  1e-05  Alpha is  0.1
+i is  2  Learning rate:  0.0001  Alpha is  0.1
+i is  3  Learning rate:  0.001  Alpha is  0.1
+i is  6  Learning rate:  0.002  Alpha is  0.1
+i is  11  Learning rate:  0.0001  Alpha is  0.01
+i is  18  Learning rate:  6e-07  Alpha is  0.01
+i is  19  Learning rate:  1e-05  Alpha is  0.001
+i is  20  Learning rate:  0.0001  Alpha is  0.001
+i is  27  Learning rate:  6e-07  Alpha is  0.001
+i is  28  Learning rate:  1e-05  Alpha is  0.0001
+i is  29  Learning rate:  0.0001  Alpha is  0.0001
+i is  36  Learning rate:  6e-07  Alpha is  0.0001 
+i is  37  Learning rate:  1e-05  Alpha is  1e-05
+i is  38  Learning rate:  0.0001  Alpha is  1e-05
+i is  45  Learning rate:  6e-07  Alpha is  1e-05
+i is  46  Learning rate:  1e-05  Alpha is  1e-07
+i is  47  Learning rate:  0.0001  Alpha is  1e-07
+i is  55  Learning rate:  1e-05  Alpha is  1
+i is  56  Learning rate:  0.0001  Alpha is  1
+i is  57  Learning rate:  0.001  Alpha is  1
+
+i is  58  Learning rate:  0.01  Alpha is  1
+
+i is  63  Learning rate:  6e-07  Alpha is  1
+i is  64  Learning rate:  1e-05  Alpha is  0.5
+i is  65  Learning rate:  0.0001  Alpha is  0.5
+i is  67  Learning rate:  0.01  Alpha is  0.5
+i is  68  Learning rate:  0.1  Alpha is  0.5
+
+i is  69  Learning rate:  0.002  Alpha is  0.5
+
+i is  72  Learning rate:  6e-07  Alpha is  0.5
+i is  74  Learning rate:  0.0001  Alpha is  4e-06
+i is  81  Learning rate:  6e-07  Alpha is  4e-06
