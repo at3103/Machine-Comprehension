@@ -147,3 +147,18 @@ Evaluating RandomForestRegressor_prediction_70.csv file
 
 
 n_estimators = 110/150
+
+sample weight: 110 for F1-score = 1, 1 otherwise
+C:\Anaconda3\envs\IBM_Watson\python.exe C:/Users/Aditya/Documents/COMSE6998_3_IBM_Watson/machine-comprehension-ensemble-learning/feature_extraction/evaluate-ml-predictions.py
+Evaluating RandomForestRegressor_prediction_50.csv file
+10101 questions evaluated
+10101
+1109
+{'f1': 25.933781002022577, 'exact_match': 10.97911097911098}
+
+sample weight: 20 for F1-score = 1, 1 otherwise
+Evaluating RandomForestRegressor_prediction_50.csv file
+10101 questions evaluated
+10101
+1188
+{'f1': 25.85666086212397, 'exact_match': 11.761211761211761}
