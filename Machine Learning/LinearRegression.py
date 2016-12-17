@@ -13,7 +13,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import cross_val_predict
 from sklearn.model_selection import GroupKFold
 from sklearn.svm import LinearSVR
-from kmeans import *
+# from kmeans import *
 from sklearn import linear_model
 import numpy as np
 import os
@@ -107,15 +107,17 @@ print Y_train.shape, Y_test.shape
 
 for k in range(0,n_x-1):
 	clf = linear_model.LinearRegression()
-	clf.fit(X_train[:,k:-4], Y_train)
-	pred = clf.predict(X_test[:,k:-4])
+	new_X_train = np.delete(X_train[:,:-4], k, 1)
+	new_X_test = np.delete(X_test[:, :-4], k, 1)
+	clf.fit(new_X_train, Y_train)
+	pred = clf.predict(new_X_test)
 	ac_score = mean_squared_error(Y_test, pred)
 
 	print "Linear Regressor MSE is ", ac_score, "K is ", k
 
 	features = ['span_words', 'q_words', 'ground_truth','predicted_F1_score']
 	combined_feature = []
-	for j,item in enumerate(X_test[:,-3:]):
+	for j,item in enumerate(X_test[:, -3:]):
 		combined_feature.append(list(item))
 		combined_feature[j].append((pred[j]))
 
