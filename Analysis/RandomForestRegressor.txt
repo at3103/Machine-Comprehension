@@ -162,3 +162,16 @@ Evaluating RandomForestRegressor_prediction_50.csv file
 10101
 1188
 {'f1': 25.85666086212397, 'exact_match': 11.761211761211761}
+
+%=========
+Feature Data without vectors:
+Evaluating RandomForestRegressor_prediction_50.csv file
+6115 questions evaluated
+6115
+523
+{'f1': 20.24785029360428, 'exact_match': 8.552739165985281}
+Evaluating RandomForestRegressor_prediction_70.csv file
+6115 questions evaluated
+6115
+527
+{'f1': 20.61798264078984, 'exact_match': 8.618152085036796}
