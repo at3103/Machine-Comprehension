@@ -29,8 +29,7 @@ data_file_path = "../data/featuredata_br/"
 data_files = [f for f in listdir(data_file_path) if isfile(join(data_file_path, f)) and f.endswith('.csv')]
 for i in data_files:
 	url = data_file_path + i
-	# names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
-	dataset = pd.read_csv(url)#, names=names)
+	dataset = pd.read_csv(url)
 	frames.append(dataset)
 	final_dataset = pd.concat(frames)
 
@@ -42,7 +41,7 @@ array = final_dataset.values
 
 #Separating the features and the labels
 array = final_dataset.values
-#print array[0]
+
 #Separating the features and the labels
 X = array[:,1:]
 Y = array[:,n_y]
@@ -54,13 +53,10 @@ qid = array[:,24]
 seed = 7
 gkf = GroupKFold(n_splits=2)
 #Obtain the training and test sets
-#X_train, X_test, Y_train, Y_test = model_selection.train_test_split(X_qid_uniq,
-#	test_size = test_size, random_state = seed)
 X_train = []
 X_test = []
 Y_train = []
 Y_test = []
-#X_train, X_test, Y_train, Y_test = gkf.split(X,Y,groups = qid)
 splits = gkf.split(X,Y,groups = qid)
 cur_splits = splits.next()
 X_train = X[cur_splits[0]]
@@ -82,24 +78,6 @@ Y_test = Y_test1[cur_splits[1]]
 
 print X_train.shape, X_test.shape
 print Y_train.shape, Y_test.shape
-
-#Enable for labels
-
-# for i in range(len(Y_train)):
-# 	if float(Y_train[i]) == 1.0:
-# 		Y_train[i] = 'Y'
-# 	elif float(Y_train[i]) >= 0.25:
-# 		Y_train[i] = 'M'
-# 	else:
-# 		Y_train[i] = 'N'
-
-# for i in range(len(Y_test)):
-# 	if float(Y_test[i]) == 1.0:
-# 		Y_test[i] = 'Y'
-# 	elif float(Y_test[i]) >= 0.25:
-# 		Y_test[i] = 'M'
-# 	else:
-# 		Y_test[i] = 'N'
 
 lrn = [0.00001, 0.0001, 0.001, 0.01, 0.1, 0.002]
 for e in lrn:

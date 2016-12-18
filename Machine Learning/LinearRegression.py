@@ -29,7 +29,7 @@ data_file_path = "../data/featuredata_br/"
 data_files = [f for f in listdir(data_file_path) if isfile(join(data_file_path, f)) and f.endswith('.csv')]
 for i in data_files:
 	url = data_file_path + i
-	dataset = pd.read_csv(url)#, names=names)
+	dataset = pd.read_csv(url)
 	frames.append(dataset)
 	final_dataset = pd.concat(frames)
 
@@ -53,18 +53,13 @@ qid = array[:,24]
 for i in range(len(Y)):
 	Y[i] = float(Y[i]) * 100
 
-
-#Set the seed for randomness here
-seed = 7
 gkf = GroupKFold(n_splits=2)
+
 #Obtain the training and test sets
-#X_train, X_test, Y_train, Y_test = model_selection.train_test_split(X_qid_uniq,
-#	test_size = test_size, random_state = seed)
 X_train = []
 X_test = []
 Y_train = []
 Y_test = []
-#X_train, X_test, Y_train, Y_test = gkf.split(X,Y,groups = qid)
 splits = gkf.split(X,Y,groups = qid)
 cur_splits = splits.next()
 X_train = X[cur_splits[0]]
@@ -88,22 +83,6 @@ print X_train.shape, X_test.shape
 print Y_train.shape, Y_test.shape
 
 #Enable for labels
-
-# for i in range(len(Y_train)):
-# 	if float(Y_train[i]) == 1.0:
-# 		Y_train[i] = 'Y'
-# 	elif float(Y_train[i]) >= 0.25:
-# 		Y_train[i] = 'M'
-# 	else:
-# 		Y_train[i] = 'N'
-
-# for i in range(len(Y_test)):
-# 	if float(Y_test[i]) == 1.0:
-# 		Y_test[i] = 'Y'
-# 	elif float(Y_test[i]) >= 0.25:
-# 		Y_test[i] = 'M'
-# 	else:
-# 		Y_test[i] = 'N'
 
 for k in range(0,n_x-1):
 	clf = linear_model.LinearRegression()

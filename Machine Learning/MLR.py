@@ -35,8 +35,7 @@ data_file_path = "../data/featuredata_br/"
 data_files = [f for f in listdir(data_file_path) if isfile(join(data_file_path, f)) and f.endswith('.csv')]
 for i in data_files:
 	url = data_file_path + i
-	# names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
-	dataset = pandas.read_csv(url)#, names=names)
+	dataset = pandas.read_csv(url)
 	frames.append(dataset)
 	final_dataset = pd.concat(frames)
 
@@ -50,13 +49,9 @@ array = final_dataset.values
 X = array[:,1:]
 Y = array[:,n_y]
 qid = array[:,24]
-#print X[0], Y[0], qid[0]
-#Validation Size
-test_size = 0.3
 
-#Set the seed for randomness here
-seed = 7
 gkf = GroupKFold(n_splits=2)
+
 #Obtain the training and test sets
 X_train = []
 X_test = []
@@ -69,32 +64,6 @@ X_train = X[cur_splits[0]]
 X_test = X[cur_splits[1]]
 Y_train = Y[cur_splits[0]]
 Y_test = Y[cur_splits[1]]
-
-#Enable for labels
-
-# for i in range(len(Y_train)):
-# 	if float(Y_train[i]) == 1.0:
-# 		Y_train[i] = 'Y'
-# 	elif float(Y_train[i]) >= 0.25:
-# 		Y_train[i] = 'M'
-# 	else:
-# 		Y_train[i] = 'N'
-
-# for i in range(len(Y_test)):
-# 	if float(Y_test[i]) == 1.0:
-# 		Y_test[i] = 'Y'
-# 	elif float(Y_test[i]) >= 0.25:
-# 		Y_test[i] = 'M'
-# 	else:
-# 		Y_test[i] = 'N'
-
-
-
-#Y_train = list(Y_train)
-
-#Y = np.asarray(array[n_y], dtype="|S6")
-
-
 
 '''
 #Preparing the metrics for evaluation and cross-validation

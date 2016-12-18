@@ -117,13 +117,6 @@ def evaluate_ml_result(file):
     print("{0} questions evaluated".format(len(predictions_qid)))
     print(evaluate(qid_ground_truths,max_predict))
 
-    # for i,key in enumerate(max_predict.keys()):
-    #     if i >5 :
-    #         break
-    #     print(key)
-    #     print(max_predict[key])
-    #     print(predictions_qid[key])
-
 def evaluate_all_predictions():
     prediction_files = [f for f in listdir(predictions_file_path) if isfile(join(predictions_file_path, f))]
     for file in prediction_files:

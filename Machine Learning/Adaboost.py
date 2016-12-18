@@ -17,15 +17,10 @@ from sklearn.model_selection import GroupKFold
 from sklearn import linear_model
 from sklearn.ensemble import AdaBoostRegressor
 import numpy as np
-#from sklearn.ensemble.forest import ExtraTreeRegressor, ExtraTreesRegressor
-#from sklearn.linear_model.huber import HuberRegressor
-#from sklearn.kernel_ridge import KernelRidge
 from sklearn.linear_model.base import LinearRegression
-#from sklearn.svm.classes import LinearSVR, NuSVR
-#from sklearn.linear_model.ransac import RANSACRegressor
 from sklearn.ensemble.forest import RandomForestRegressor
 from sklearn.linear_model.ridge import Ridge, RidgeCV
-#from sklearn.linear_model.stochastic_gradient import SGDRegressor
+
 
 	
 n_x = 22	#Columns which are considered features
@@ -89,26 +84,11 @@ name_list =['ExtraTreeRegressor', 'ExtraTreesRegressor',
 'GradientBoostingRegressor', 'HuberRegressor', 'KernelRidge', 'LinearRegression', 'LinearSVR', 
 'NuSVR', 'RANSACRegressor', 'RandomForestRegressor', 'Ridge', 'RidgeCV', 'SGDRegressor', 'SVR']
 
-#Load the models
-models = []
-# models.append(('ExtraTreeRegressor', ExtraTreeRegressor()))
-# models.append(('ExtraTreesRegressor', ExtraTreesRegressor()))
-# #models.append(('GradientBoostingRegressor', GradientBoostingRegressor()))
-# models.append(('HuberRegressor', HuberRegressor()))
-# models.append(('KernelRidge', KernelRidge()))
-# models.append(('LinearRegression', LinearRegression()))
-# models.append(('LinearSVR', LinearSVR()))
-# models.append(('NuSVR', NuSVR()))
-# models.append(('RANSACRegressor', RANSACRegressor()))
-# models.append(('RandomForestRegressor', RandomForestRegressor()))
-# models.append(('Ridge', Ridge()))
-# models.append(('RidgeCV', RidgeCV()))
-# models.append(('SGDRegressor', SGDRegressor()))
 
 
 pred = []
 name = 'Ridge'
-#for name,model in models:
+
 for n in [10,50,200,400,600]:
 	reg = AdaBoostRegressor(n_estimators=n, base_estimator=Ridge())
 

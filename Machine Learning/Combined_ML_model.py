@@ -151,41 +151,6 @@ Y_test = Y_test1[cur_splits[1]]
 print X_train.shape, X_test.shape
 print Y_train.shape, Y_test.shape
 
-# for i in range(len(Y_train)):
-# 	if float(Y_train[i]) == 1.0:
-# 		Y_train[i] = 'Y'
-# 	elif float(Y_train[i]) >= 0.25:
-# 		Y_train[i] = 'M'
-# 	else:
-# 		Y_train[i] = 'N'
-
-# for i in range(len(Y_test)):
-# 	if float(Y_test[i]) == 1.0:
-# 		Y_test[i] = 'Y'
-# 	elif float(Y_test[i]) >= 0.25:
-# 		Y_test[i] = 'M'
-# 	else:
-# 		Y_test[i] = 'N'
-
-
-
-#Y_train = list(Y_train)
-
-#Y = np.asarray(array[n_y], dtype="|S6")
-
-#print Y_train.dtype
-
-'''
-#Preparing the metrics for evaluation and cross-validation
-'''
-
-#Evaluation metrics and test options
-
-# features = ['root match 1', 'sent_root_qs', 'qs_root_sent',  'n_wrds_l', 'n_wrds_r', 
-# 					'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf', 
-# 					'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent_label', 'pos', 'ner', 'lemma', 'deptree_path', 'F1_score',
-# 					'span_words', 'q_words', 'ground_truth','predicted_F1_score']
-
 
 w= {'LinearRegression':0.25, 'BayesianRegression':0.25,'MLPRegressor1':0.10, 'MLPRegressor2':0.10, 'GradientBoostingRegressor': 0.10, 'LinearSVR':0.20 }
 

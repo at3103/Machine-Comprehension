@@ -34,13 +34,11 @@ n_y = 22 # the column for label
 
 # Load dataset
 frames=[]
-#data_file_path = "../data/featuredata_br/"
-data_file_path = "../data/featuredata_br_copy/"
+data_file_path = "../data/featuredata_br/"
 data_files = [f for f in listdir(data_file_path) if isfile(join(data_file_path, f)) and f.endswith('.csv')]
 for i in data_files:
 	url = data_file_path + i
-	# names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
-	dataset = pd.read_csv(url)#, names=names)
+	dataset = pd.read_csv(url)
 	frames.append(dataset)
 	final_dataset = pd.concat(frames)
 
@@ -52,12 +50,12 @@ array = final_dataset.values
 
 #Separating the features and the labels
 array = final_dataset.values
-#print array[0]
+
 #Separating the features and the labels
 X = array[:,1:]
 Y = array[:,n_y]
 qid = array[:,24]
-#print X[0], Y[0], qid[0]
+
 
 #Enable for labels
 
@@ -107,12 +105,9 @@ for s in set(Y):
 	class_weight[s] = 90 - ord(s)
 
 print "In whole data",Counter(Y)
-#Set the seed for randomness here
-seed = 7
+
 gkf = GroupKFold(n_splits=2)
 #Obtain the training and test sets
-#X_train, X_test, Y_train, Y_test = model_selection.train_test_split(X_qid_uniq,
-#	test_size = test_size, random_state = seed)
 X_train = []
 X_test = []
 Y_train = []
@@ -158,16 +153,11 @@ try :
 	models.append(('SVM', LinearSVC(dual=False,class_weight = class_weight)))
 	models.append(('dt', DecisionTreeClassifier(max_depth=4)))
 	models.append(('rf',RandomForestClassifier(n_estimators=20)))
-	#models.append(('CART', DecisionTreeClassifier()))
 	models.append(('KNN', KNeighborsClassifier()))
-	#models.append(('SVM', SVC(kernel='rbf', probability=True)))
-	#models.append(('SVR', SVR(kernel='linear', C=1e3)))
+
 
 except Exception, e:
 	traceback.print_exc()
-#Models_Evaluation
-models_eval=[]
-models_metrics=[]
 
 #Evaluate the models
 results = []
@@ -177,11 +167,6 @@ for name, model in models:
 	names.append(name)
 
 
-
-# for i,value in enumerate(Y_test):
-#  	if Y_test[i] < 1.0:
-#  		Y_test[i] = 0.0
-# Y_test = np.asarray(Y_test, dtype="f4")
 k = 0
 for i in range(0,len(models)):
 	clf = models[i][1]
