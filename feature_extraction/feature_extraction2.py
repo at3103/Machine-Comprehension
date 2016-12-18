@@ -10,7 +10,7 @@ import string
 import networkx
 import traceback
 
-word_vectors_filename = "../data/glove/glove.6B.50d.txt"
+word_vectors_filename = "../data/glove/glove.6B.50d_normalized.txt"
 word_vectors = {}
 df = {}
 N = 0
@@ -192,10 +192,10 @@ def cosine_similarity(vec1, vec2):
 	product = 0
 	vec1 = map(float,vec1)
 	vec2 = map(float,vec2)
-	vec1_magnitude = vector_magnitude(vec1)
-	vec2_magnitude = vector_magnitude(vec2)
+	# vec1_magnitude = vector_magnitude(vec1)
+	# vec2_magnitude = vector_magnitude(vec2)
 	product = sum(map(operator.mul,vec1,vec2))
-	return max(-1, min(1, product / (vec1_magnitude * vec2_magnitude)))
+	return max(-1, min(1, product))# / (vec1_magnitude * vec2_magnitude)))
 
 def root_match_feature(deptree, tokens, question_deptree, question_tokens):
 	root_match = []
@@ -329,8 +329,8 @@ def pos_feature(span, pos, q_pos):
 		if re.match('W', pos_qs):
 			wh_tag = pos_qs#re.split('W',)
 			break
-	if wh_tag == '':
-		print span['text'], q_pos
+	# if wh_tag == '':
+	# 	print span['text'], q_pos
 	#tag[0] in pos_dict.get(wh_tag,[]) or 
 	pos_tags = pos[int(span['start']):int(span['end']) + 1]
 	for tag in pos_tags: 
@@ -647,8 +647,26 @@ def parse_data(path):
 			curr_file += 1
 
 	print "All done"
+	# Write the last chunk in case there are any left in written_files
+	print('Writing!')
+	features = ['root match 1', 'sent_root_qs', 'qs_root_sent', 'n_wrds_l', 'n_wrds_r',
+				'n_wrds_in', 'n_wrds_sent', 'm_u_sent', 'm_u_span', 'm_u_l', 'm_u_r', 'span_wf',
+				'm_b_sent', 'm_b_span', 'm_b_l', 'm_b_r', 'constituent_label', 'pos', 'ner', 'lemma', 'deptree_path',
+				'F1_score',
+				'span_words', 'q_words', 'ground_truth']
+
+	df = pandas.DataFrame.from_records(combined_features, columns=features)
+	if not os.path.exists(output_file_path):
+		os.makedirs(output_file_path)
+	df.to_csv(os.path.join(output_file_path, str(num_files_written) + '.csv'))
+
+	# append to written files and reset
+	with open(written_files_path, 'a') as writing_file:
+		for w_file in written_files:
+			writing_file.write(w_file)
+			writing_file.write("\n")
 """
 Read in processed data from JSON, create features, save to CSV
 """
 if __name__ == '__main__':
-	parse_data("../data/processed/processed_train1")
+	parse_data("../data/processed/processed_train2")
