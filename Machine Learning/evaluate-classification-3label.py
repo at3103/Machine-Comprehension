@@ -74,7 +74,7 @@ def evaluate(ground_truths_dict, predictions):
     f1 = 100.0 * f1 / total
     return {'exact_match': exact_match, 'f1': f1}
 
-predictions_file_path = "../data/predictions/classification/rf/"
+predictions_file_path = "../data/predictions/classification/ensemble/"
 
 def get_max_predictions(prediction_dict):
     max_predict = defaultdict(str)
@@ -89,13 +89,11 @@ def get_max_predictions(prediction_dict):
                 answer_dict['N'].append(constituent[1])
         answer = ''
         if 'Y' in answer_dict:
-            answer = random.choice(answer_dict['Y'])
-        elif 'M' in max_predict:
-            answer = min(answer_dict['M'], key=len)
-        elif 'N' in max_predict:
+            answer = max(answer_dict['Y'],key=len)
+        elif 'M' in answer_dict:
+            answer = min(answer_dict['M'],key=len)
+        elif 'N' in answer_dict:
             answer = random.choice(answer_dict['N'])
-
-        #print(answer)
         max_predict[qid] = answer
     return max_predict
 
