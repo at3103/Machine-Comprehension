@@ -1,0 +1,281 @@
+Ashwins-MacBook-Pro:Machine Learning atamilse$ python Adaboost.py 
+(3358614, 26) 2 2
+(1679306, 25) (839653, 25)
+(1679306,) (839653,)
+(2518959, 25) (839655, 25)
+(2518959,) (839655,)
+AdaboostRegressor Accuracy is  0.0298361722864
+
+Ashwins-MacBook-Pro:feature_extraction atamilse$ python evaluate-ml-predictions.py 
+Evaluating AdaboostRegressor_prediction.csv file
+7438 questions evaluated
+7438
+852
+{'f1': 19.221670122817414, 'exact_match': 11.454692121538049}
+
+
+
+****************************************************
+
+Ashwins-MacBook-Pro:Machine Learning atamilse$ python Adaboost.py 
+(3358614, 26) 2 2
+(1679306, 25) (839653, 25)
+(1679306,) (839653,)
+(2518959, 25) (839655, 25)
+(2518959,) (839655,)
+AdaboostRegressor MSE is  0.0301299178955 k = 15
+AdaboostRegressor MSE is  0.0305942100156 k = 16
+AdaboostRegressor MSE is  0.0307175336272 k = 17
+AdaboostRegressor MSE is  0.021518679493 k = 18
+AdaboostRegressor MSE is  0.0217364628815 k = 19
+AdaboostRegressor MSE is  0.0225102865259 k = 20
+
+
+Evaluating AdaboostRegressor_prediction_15.csv file
+7438 questions evaluated
+7438
+791
+{'f1': 16.684593253704087, 'exact_match': 10.63457918795375}
+Evaluating AdaboostRegressor_prediction_16.csv file
+7438 questions evaluated
+7438
+786
+{'f1': 17.163971327301628, 'exact_match': 10.56735681634848}
+Evaluating AdaboostRegressor_prediction_17.csv file
+7438 questions evaluated
+7438
+800
+{'f1': 17.149037266420006, 'exact_match': 10.755579456843238}
+Evaluating AdaboostRegressor_prediction_18.csv file
+7438 questions evaluated
+7438
+694
+{'f1': 17.766672140465428, 'exact_match': 9.330465178811508}
+Evaluating AdaboostRegressor_prediction_19.csv file
+7438 questions evaluated
+7438
+257
+{'f1': 12.119136358563946, 'exact_match': 3.45522990051089}
+Evaluating AdaboostRegressor_prediction_20.csv file
+7438 questions evaluated
+7438
+283
+{'f1': 10.117386743215857, 'exact_match': 3.8047862328582953}
+Ashwins-MacBook-Pro:feature_extraction atamilse$ 
+
+
+
+Ashwins-MacBook-Pro:Machine Learning atamilse$ python Adaboost.py 
+ 	(3358614, 26) 2 2
+(1679306, 25) (839653, 25)
+(1679306,) (839653,)
+(2518959, 25) (839655, 25)
+(2518959,) (839655,)
+AdaboostRegressor MSE is  0.0297096785291
+AdaboostRegressor MSE is  0.0300218892523
+AdaboostRegressor MSE is  0.029718223929
+AdaboostRegressor MSE is  0.0296271249523
+AdaboostRegressor MSE is  0.0299664474708
+AdaboostRegressor MSE is  0.0289916132291
+AdaboostRegressor MSE is  0.0289539102106
+AdaboostRegressor MSE is  0.0288746372164
+AdaboostRegressor MSE is  0.0298230730308
+AdaboostRegressor MSE is  0.0299416593439
+AdaboostRegressor MSE is  0.0285774630411
+AdaboostRegressor MSE is  0.0299052947774
+AdaboostRegressor MSE is  0.0296272500054
+AdaboostRegressor MSE is  0.0298855763066
+AdaboostRegressor MSE is  0.0299542597234
+^CTraceback (most recent call last):
+
+format: Evaluating AdaboostRegressor_prediction_{n_estimators}.csv file
+
+Evaluating AdaboostRegressor_prediction_100.csv file
+7438 questions evaluated
+7438
+853
+{'f1': 19.15412362513149, 'exact_match': 11.468136595859102}
+Evaluating AdaboostRegressor_prediction_101.csv file
+7438 questions evaluated
+7438
+854
+{'f1': 19.26161110427146, 'exact_match': 11.481581070180155}
+Evaluating AdaboostRegressor_prediction_102.csv file
+7438 questions evaluated
+7438
+865
+{'f1': 19.229868173025856, 'exact_match': 11.62947028771175}
+Evaluating AdaboostRegressor_prediction_103.csv file
+7438 questions evaluated
+7438
+869
+{'f1': 19.202039024522755, 'exact_match': 11.683248184995966}
+Evaluating AdaboostRegressor_prediction_104.csv file
+7438 questions evaluated
+7438
+866
+{'f1': 19.173114994180587, 'exact_match': 11.642914762032804}
+Evaluating AdaboostRegressor_prediction_105.csv file
+7438 questions evaluated
+7438
+834
+{'f1': 18.451804052410687, 'exact_match': 11.212691583759074}
+Evaluating AdaboostRegressor_prediction_106.csv file
+7438 questions evaluated
+7438
+805
+{'f1': 18.242986815338536, 'exact_match': 10.822801828448508}
+Evaluating AdaboostRegressor_prediction_107.csv file
+7438 questions evaluated
+7438
+926
+{'f1': 19.68760634686252, 'exact_match': 12.449583221296047}
+Evaluating AdaboostRegressor_prediction_108.csv file
+7438 questions evaluated
+7438
+862
+{'f1': 19.195219474572124, 'exact_match': 11.589136864748589}
+Evaluating AdaboostRegressor_prediction_109.csv file
+7438 questions evaluated
+7438
+857
+{'f1': 19.11739558403818, 'exact_match': 11.521914493143319}
+
+Evaluating AdaboostRegressor_prediction_110.csv file
+7438 questions evaluated
+7438
+934
+{'f1': 20.10843593479193, 'exact_match': 12.557139015864479}
+
+Evaluating AdaboostRegressor_prediction_111.csv file
+7438 questions evaluated
+7438
+864
+{'f1': 19.236778234500953, 'exact_match': 11.616025813390696}
+
+Evaluating AdaboostRegressor_prediction_112.csv file
+7438 questions evaluated
+7438
+858
+{'f1': 18.989715842174082, 'exact_match': 11.535358967464372}
+
+Evaluating AdaboostRegressor_prediction_113.csv file
+7438 questions evaluated
+7438
+861
+{'f1': 19.325928401319064, 'exact_match': 11.575692390427534}
+Evaluating AdaboostRegressor_prediction_114.csv file
+7438 questions evaluated
+7438
+853
+{'f1': 19.440165250103806, 'exact_match': 11.468136595859102}
+Evaluating AdaboostRegressor_prediction_15.csv file
+7438 questions evaluated
+7438
+791
+{'f1': 16.684593253704087, 'exact_match': 10.63457918795375}
+Evaluating AdaboostRegressor_prediction_16.csv file
+7438 questions evaluated
+7438
+786
+{'f1': 17.163971327301628, 'exact_match': 10.56735681634848}
+Evaluating AdaboostRegressor_prediction_17.csv file
+7438 questions evaluated
+7438
+800
+{'f1': 17.149037266420006, 'exact_match': 10.755579456843238}
+Evaluating AdaboostRegressor_prediction_18.csv file
+7438 questions evaluated
+7438
+694
+{'f1': 17.766672140465428, 'exact_match': 9.330465178811508}
+Evaluating AdaboostRegressor_prediction_19.csv file
+7438 questions evaluated
+7438
+257
+{'f1': 12.119136358563946, 'exact_match': 3.45522990051089}
+Evaluating AdaboostRegressor_prediction_20.csv file
+7438 questions evaluated
+7438
+283
+{'f1': 10.117386743215857, 'exact_match': 3.8047862328582953}
+
+Evaluating AdaboostRegressor_prediction_200.csv file
+7952 questions evaluated
+7952
+1001
+{'f1': 20.581011200869437, 'exact_match': 12.588028169014084}
+
+Evaluating AdaboostRegressor_prediction_300.csv file
+7952 questions evaluated
+7952
+943
+{'f1': 19.263197643218, 'exact_match': 11.858651911468813}
+Evaluating AdaboostRegressor_prediction_400.csv file
+7952 questions evaluated
+7952
+990
+{'f1': 20.18541778260824, 'exact_match': 12.449698189134809}
+Evaluating AdaboostRegressor_prediction_500.csv file
+7952 questions evaluated
+7952
+987
+{'f1': 19.849386050759456, 'exact_match': 12.411971830985916}
+
+Evaluating AdaboostRegressor_prediction_600.csv file
+7952 questions evaluated
+7952
+989
+{'f1': 21.042754186891152, 'exact_match': 12.43712273641851}
+
+Evaluating AdaboostRegressor_prediction_700.csv file
+7952 questions evaluated
+7952
+933
+{'f1': 19.084034125054593, 'exact_match': 11.732897384305835}
+Evaluating AdaboostRegressor_prediction_800.csv file
+7952 questions evaluated
+7952
+980
+{'f1': 19.55277709045661, 'exact_match': 12.32394366197183}
+Evaluating AdaboostRegressor_prediction_900.csv file
+7952 questions evaluated
+7952
+949
+{'f1': 19.419865120349936, 'exact_match': 11.9341046277666}
+
+****************************************************************
+****************************************************************
+
+Best:
+
+Evaluating AdaboostRegressor_prediction_600.csv file
+7952 questions evaluated
+7952
+989
+{'f1': 21.042754186891152, 'exact_match': 12.43712273641851}
+
+n_estimators = 600; all features.
+
+others:
+
+Evaluating AdaboostRegressor_prediction_400.csv file
+7952 questions evaluated
+7952
+990
+{'f1': 20.18541778260824, 'exact_match': 12.449698189134809}
+
+Evaluating AdaboostRegressor_prediction_110.csv file
+7438 questions evaluated
+7438
+934
+{'f1': 20.10843593479193, 'exact_match': 12.557139015864479}
+
+n_estimators = 110; all features.
+
+
+Evaluating AdaboostRegressor_prediction_200.csv file
+7952 questions evaluated
+7952
+1001
+{'f1': 20.581011200869437, 'exact_match': 12.588028169014084}

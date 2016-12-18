@@ -1,0 +1,232 @@
+dyn-160-39-229-203:feature_extraction atamilse$ python Combined.py 
+(1581853, 26) 2 2
+(790925, 25) (395464, 25)
+(790925,) (395464,)
+(1186389, 25) (395464, 25)
+(1186389,) (395464,)
+
+n_x = 22
+
+for k in range(15,n_x-1):
+
+LinearRegression Accuracy is  0.0219080885711
+BayesianRegression Accuracy is  0.0219081091862
+MLPRegressor1 Accuracy is  0.02223643914
+MLPRegressor2 Accuracy is  0.0220561230464
+GradientBoostingRegressor Accuracy is  0.0215075095817
+LinearSVR Accuracy is  0.0249067869122
+LinearRegression Accuracy is  0.0219201976835
+BayesianRegression Accuracy is  0.0219202140884
+MLPRegressor1 Accuracy is  0.0218519246509
+MLPRegressor2 Accuracy is  0.0217640019419
+GradientBoostingRegressor Accuracy is  0.0215075095817
+LinearSVR Accuracy is  0.0249063091717
+LinearRegression Accuracy is  0.0219210938083
+BayesianRegression Accuracy is  0.0219211054032
+MLPRegressor1 Accuracy is  0.0216186918918
+MLPRegressor2 Accuracy is  0.0216216329424
+GradientBoostingRegressor Accuracy is  0.0215075095817
+LinearSVR Accuracy is  0.0249062126314
+LinearRegression Accuracy is  0.0219493301992
+BayesianRegression Accuracy is  0.0219493384233
+MLPRegressor1 Accuracy is  0.0216362569369
+MLPRegressor2 Accuracy is  0.0222356572714
+GradientBoostingRegressor Accuracy is  0.0215202265779
+LinearSVR Accuracy is  0.0249068145124
+LinearRegression Accuracy is  0.0220722013957
+BayesianRegression Accuracy is  0.022072207039
+MLPRegressor1 Accuracy is  0.0218902123545
+MLPRegressor2 Accuracy is  0.0218276759251
+GradientBoostingRegressor Accuracy is  0.0216604204514
+LinearSVR Accuracy is  0.0249064705631
+LinearRegression Accuracy is  0.0223776835686
+BayesianRegression Accuracy is  0.0223776859581
+MLPRegressor1 Accuracy is  0.0224098555657
+MLPRegressor2 Accuracy is  0.0224037619631
+GradientBoostingRegressor Accuracy is  0.022397291647
+LinearSVR Accuracy is  0.0249063071634
+
+
+Ashwins-MacBook-Pro:feature_extraction atamilse$ python evaluate-ml-predictions.py 
+Evaluating BayesianRegression_prediction_15.csv file
+3514 questions evaluated
+3514
+391
+{'f1': 16.66051876667352, 'exact_match': 11.126920887877063}
+Evaluating BayesianRegression_prediction_16.csv file
+3514 questions evaluated
+3514
+372
+{'f1': 16.25533975082609, 'exact_match': 10.586226522481503}
+Evaluating BayesianRegression_prediction_17.csv file
+3514 questions evaluated
+3514
+393
+{'f1': 16.303022636067336, 'exact_match': 11.18383608423449}
+Evaluating BayesianRegression_prediction_18.csv file
+3514 questions evaluated
+3514
+411
+{'f1': 17.82360494716737, 'exact_match': 11.696072851451337}
+Evaluating BayesianRegression_prediction_19.csv file
+3514 questions evaluated
+3514
+137
+{'f1': 14.321954543913893, 'exact_match': 3.898690950483779}
+Evaluating BayesianRegression_prediction_20.csv file
+3514 questions evaluated
+3514
+151
+{'f1': 10.78956235705925, 'exact_match': 4.297097324985772}
+Evaluating GradientBoostingRegressor_prediction_15.csv file
+3514 questions evaluated
+3514
+178
+{'f1': 15.794149129840113, 'exact_match': 5.065452475811042}
+Evaluating GradientBoostingRegressor_prediction_16.csv file
+3514 questions evaluated
+3514
+178
+{'f1': 15.794149129840113, 'exact_match': 5.065452475811042}
+Evaluating GradientBoostingRegressor_prediction_17.csv file
+3514 questions evaluated
+3514
+178
+{'f1': 15.794149129840113, 'exact_match': 5.065452475811042}
+Evaluating GradientBoostingRegressor_prediction_18.csv file
+3514 questions evaluated
+3514
+223
+{'f1': 15.97437300174112, 'exact_match': 6.346044393853159}
+Evaluating GradientBoostingRegressor_prediction_19.csv file
+3514 questions evaluated
+3514
+125
+{'f1': 11.023384897093225, 'exact_match': 3.5571997723392146}
+Evaluating GradientBoostingRegressor_prediction_20.csv file
+3514 questions evaluated
+3514
+140
+{'f1': 10.115790975131004, 'exact_match': 3.9840637450199203}
+Evaluating LinearRegression_prediction_15.csv file
+3514 questions evaluated
+3514
+392
+{'f1': 16.688976364852234, 'exact_match': 11.155378486055778}
+Evaluating LinearRegression_prediction_16.csv file
+3514 questions evaluated
+3514
+372
+{'f1': 16.25533975082609, 'exact_match': 10.586226522481503}
+Evaluating LinearRegression_prediction_17.csv file
+3514 questions evaluated
+3514
+393
+{'f1': 16.303022636067336, 'exact_match': 11.18383608423449}
+Evaluating LinearRegression_prediction_18.csv file
+3514 questions evaluated
+3514
+411
+{'f1': 17.817939181014147, 'exact_match': 11.696072851451337}
+Evaluating LinearRegression_prediction_19.csv file
+3514 questions evaluated
+3514
+137
+{'f1': 14.321954543913893, 'exact_match': 3.898690950483779}
+Evaluating LinearRegression_prediction_20.csv file
+3514 questions evaluated
+3514
+151
+{'f1': 10.78956235705925, 'exact_match': 4.297097324985772}
+Evaluating LinearSVR_prediction_15.csv file
+3514 questions evaluated
+3514
+30
+{'f1': 1.7500549630870368, 'exact_match': 0.8537279453614115}
+Evaluating LinearSVR_prediction_16.csv file
+3514 questions evaluated
+3514
+16
+{'f1': 4.173447939275137, 'exact_match': 0.4553215708594195}
+Evaluating LinearSVR_prediction_17.csv file
+3514 questions evaluated
+3514
+226
+{'f1': 9.62632297060008, 'exact_match': 6.4314171883893}
+Evaluating LinearSVR_prediction_18.csv file
+3514 questions evaluated
+3514
+33
+{'f1': 2.0972132889773945, 'exact_match': 0.9391007398975526}
+Evaluating LinearSVR_prediction_19.csv file
+3514 questions evaluated
+3514
+47
+{'f1': 3.154746197806542, 'exact_match': 1.3375071143995447}
+Evaluating LinearSVR_prediction_20.csv file
+3514 questions evaluated
+3514
+32
+{'f1': 2.3171107508041078, 'exact_match': 0.910643141718839}
+Evaluating MLPRegressor1_prediction_15.csv file
+3514 questions evaluated
+3514
+149
+{'f1': 9.768381512681142, 'exact_match': 4.240182128628343}
+Evaluating MLPRegressor1_prediction_16.csv file
+3514 questions evaluated
+3514
+355
+{'f1': 17.114372194573214, 'exact_match': 10.102447353443369}
+Evaluating MLPRegressor1_prediction_17.csv file
+3514 questions evaluated
+3514
+248
+{'f1': 16.240041234887737, 'exact_match': 7.057484348321002}
+Evaluating MLPRegressor1_prediction_18.csv file
+3514 questions evaluated
+3514
+371
+{'f1': 15.925703342042738, 'exact_match': 10.557768924302788}
+Evaluating MLPRegressor1_prediction_19.csv file
+3514 questions evaluated
+3514
+139
+{'f1': 14.362216091005266, 'exact_match': 3.9556061468412067}
+Evaluating MLPRegressor1_prediction_20.csv file
+3514 questions evaluated
+3514
+151
+{'f1': 10.78956235705925, 'exact_match': 4.297097324985772}
+Evaluating MLPRegressor2_prediction_15.csv file
+3514 questions evaluated
+3514
+201
+{'f1': 11.48631060530802, 'exact_match': 5.719977233921457}
+Evaluating MLPRegressor2_prediction_16.csv file
+3514 questions evaluated
+3514
+354
+{'f1': 16.63006010814773, 'exact_match': 10.073989755264655}
+Evaluating MLPRegressor2_prediction_17.csv file
+3514 questions evaluated
+3514
+423
+{'f1': 18.20124602925193, 'exact_match': 12.037564029595902}
+Evaluating MLPRegressor2_prediction_18.csv file
+3514 questions evaluated
+3514
+386
+{'f1': 15.78582674625413, 'exact_match': 10.984632896983495}
+Evaluating MLPRegressor2_prediction_19.csv file
+3514 questions evaluated
+3514
+139
+{'f1': 14.353965978835856, 'exact_match': 3.9556061468412067}
+Evaluating MLPRegressor2_prediction_20.csv file
+3514 questions evaluated
+3514
+151
+{'f1': 10.78956235705925, 'exact_match': 4.297097324985772}
+
+

@@ -1,0 +1,69 @@
+Ashwins-MacBook-Pro:Machine Learning atamilse$ python GBR.py 
+(1900658, 26) 2 2
+(950328, 25) (475172, 25)
+(950328,) (475172,)
+(1425500, 25) (475158, 25)
+(1425500,) (475158,)
+GBRegressor MSE is  0.0228834353839  Learning rate:  1e-05
+GBRegressor MSE is  0.0228689549558  Learning rate:  0.0001
+GBRegressor MSE is  0.0227376887816  Learning rate:  0.001
+GBRegressor MSE is  0.0221711419585  Learning rate:  0.01
+GBRegressor MSE is  0.0215573944689  Learning rate:  0.1
+GBRegressor MSE is  0.0226171846744  Learning rate:  0.002
+Ashwins-MacBook-Pro:Machine Learning atamilse$ 
+
+
+Evaluating GBR_prediction_l_0.0001.csv file
+4230 questions evaluated
+4230
+112
+{'f1': 9.095329005897568, 'exact_match': 2.647754137115839}
+Evaluating GBR_prediction_l_0.001.csv file
+4230 questions evaluated
+4230
+112
+{'f1': 9.095329005897568, 'exact_match': 2.647754137115839}
+Evaluating GBR_prediction_l_0.002.csv file
+4230 questions evaluated
+4230
+112
+{'f1': 9.095329005897568, 'exact_match': 2.647754137115839}
+Evaluating GBR_prediction_l_0.01.csv file
+4230 questions evaluated
+4230
+232
+{'f1': 16.26041932802496, 'exact_match': 5.484633569739953}
+Evaluating GBR_prediction_l_0.1.csv file
+4230 questions evaluated
+4230
+261
+{'f1': 20.608981323080297, 'exact_match': 6.170212765957447}
+Evaluating GBR_prediction_l_1e-05.csv file
+4230 questions evaluated
+4230
+112
+{'f1': 9.095329005897568, 'exact_match': 2.647754137115839}
+Ashwins-MacBook-Pro:feature_extraction atamilse$ 
+
+
+
+
+Best :
+GBRegressor MSE is  0.0215573944689  Learning rate:  0.1
+
+
+Evaluating GBR_prediction_l_0.1.csv file
+4230 questions evaluated
+4230
+261
+{'f1': 20.608981323080297, 'exact_match': 6.170212765957447}
+
+GBRegressor MSE is  0.0221711419585  Learning rate:  0.01
+
+Evaluating GBR_prediction_l_0.01.csv file
+4230 questions evaluated
+4230
+232
+{'f1': 16.26041932802496, 'exact_match': 5.484633569739953}
+
+**************************************************************
