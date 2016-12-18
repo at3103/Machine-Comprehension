@@ -1,0 +1,103 @@
+(1900658, 26) 2 2
+(950328, 25) (475172, 25)
+(950328,) (475172,)
+(1425500, 25) (475158, 25)
+(1425500,) (475158,)
+LSVRegressor Accuracy is  0.0272239702052 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0276184242009 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0280733126644 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0281920952298 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0277957924508 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0304996084542 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0300565138274 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0298109783403 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0270940096407 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0285353116086 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0259843151184 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0247776858684 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0257380835313 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0254534354345 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0254544307621 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0254592650886 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.025450954265 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0254507604235 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0254509047975 epsilon is 1e-05 tol is 1e-05
+LSVRegressor Accuracy is  0.0254507672807 epsilon is 1e-05 tol is 1e-05
+
+Ashwins-MacBook-Pro:feature_extraction atamilse$ python evaluate-ml-predictions.py 
+
+Evaluating LSVR_prediction_alph1.csv file
+820 questions evaluated
+820
+36
+{'f1': 14.987954862574274, 'exact_match': 4.390243902439025}
+
+Evaluating LSVR_prediction_eps_1e-05_tol_1e-05_0.csv file
+4230 questions evaluated
+4230
+358
+{'f1': 13.709230024609521, 'exact_match': 8.463356973995271}
+Evaluating LSVR_prediction_eps_1e-05_tol_1e-05_1.csv file
+4230 questions evaluated
+4230
+350
+{'f1': 13.438788248391766, 'exact_match': 8.274231678486998}
+Evaluating LSVR_prediction_eps_1e-05_tol_1e-05_10.csv file
+4230 questions evaluated
+4230
+214
+{'f1': 7.8064269221384, 'exact_match': 5.0591016548463354}
+Evaluating LSVR_prediction_eps_1e-05_tol_1e-05_2.csv file
+4230 questions evaluated
+4230
+330
+{'f1': 12.431058420566787, 'exact_match': 7.801418439716312}
+Evaluating LSVR_prediction_eps_1e-05_tol_1e-05_3.csv file
+4230 questions evaluated
+4230
+330
+{'f1': 12.222271546438678, 'exact_match': 7.801418439716312}
+Evaluating LSVR_prediction_eps_1e-05_tol_1e-05_4.csv file
+4230 questions evaluated
+4230
+315
+{'f1': 12.32861423239276, 'exact_match': 7.446808510638298}
+Evaluating LSVR_prediction_eps_1e-05_tol_1e-05_5.csv file
+4230 questions evaluated
+4230
+266
+{'f1': 10.78910197750022, 'exact_match': 6.288416075650118}
+Evaluating LSVR_prediction_eps_1e-05_tol_1e-05_6.csv file
+4230 questions evaluated
+4230
+262
+{'f1': 10.709616942512566, 'exact_match': 6.193853427895981}
+Evaluating LSVR_prediction_eps_1e-05_tol_1e-05_7.csv file
+4230 questions evaluated
+4230
+37
+{'f1': 5.994888615062565, 'exact_match': 0.8747044917257684}
+Evaluating LSVR_prediction_eps_1e-05_tol_1e-05_8.csv file
+4230 questions evaluated
+4230
+61
+{'f1': 6.474131098214334, 'exact_match': 1.442080378250591}
+Evaluating LSVR_prediction_eps_1e-05_tol_1e-05_9.csv file
+4230 questions evaluated
+4230
+40
+{'f1': 6.505328373690473, 'exact_match': 0.9456264775413712}
+Ashwins-MacBook-Pro:feature_extraction atamilse$ 
+
+
+
+
+
+Best:
+
+Evaluating LSVR_prediction_eps_1e-05_tol_1e-05_0.csv file
+4230 questions evaluated
+4230
+358
+{'f1': 13.709230024609521, 'exact_match': 8.463356973995271}
+

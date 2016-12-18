@@ -37,7 +37,7 @@ def main():
 			print "Working on {0} contexts".format(dataset)
 			if parse:
 				os.system("python ContextParsing.py {0}".format(dataset))
-			os.system("java -cp .:stanford-corenlp-3.7.0.jar:json-simple-1.1.jar corenlp/ GetConstituents {0}".format(dataset))
+			os.system("java -cp .:stanford-corenlp-3.7.0.jar:json-simple-1.1.jar corenlp GetConstituents {0}".format(dataset))
 
 
 if __name__ == '__main__':

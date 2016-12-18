@@ -1,0 +1,255 @@
+Ashwins-MacBook-Pro:Machine Learning atamilse$ python LinearRegression.py 
+(3296860, 26) 2 2
+(1648423, 25) (824218, 25)
+(1648423,) (824218,)
+(2472641, 25) (824219, 25)
+(2472641,) (824219,)
+Linear Regressor MSE is  0.0219570542203 K is  0
+Linear Regressor MSE is  0.0219778216076 K is  1
+Linear Regressor MSE is  0.0220286075961 K is  2
+Linear Regressor MSE is  0.02203404518 K is  3
+Linear Regressor MSE is  0.0220338258491 K is  4
+Linear Regressor MSE is  0.0220349320208 K is  5
+Linear Regressor MSE is  0.0220715380947 K is  6
+Linear Regressor MSE is  0.0220905587927 K is  7
+Linear Regressor MSE is  0.0220916381998 K is  8
+Linear Regressor MSE is  0.0220919918913 K is  9
+Linear Regressor MSE is  0.0221195551803 K is  10
+Linear Regressor MSE is  0.0221325643511 K is  11
+Linear Regressor MSE is  0.0221331137044 K is  12
+Linear Regressor MSE is  0.0221330637853 K is  13
+Linear Regressor MSE is  0.0221880107536 K is  14
+Linear Regressor MSE is  0.022235748164 K is  15
+Linear Regressor MSE is  0.022247470975 K is  16
+Linear Regressor MSE is  0.0222538162027 K is  17
+Linear Regressor MSE is  0.0222845074414 K is  18
+Linear Regressor MSE is  0.0223728663726 K is  19
+Linear Regressor MSE is  0.0226587706738 K is  20
+
+
+Ashwins-MacBook-Pro:feature_extraction atamilse$ python evaluate-ml-predictions.py 
+Evaluating LR_prediction_k_0.csv file
+7288 questions evaluated
+7288
+497
+{'f1': 16.468468555385517, 'exact_match': 6.819429198682766}
+Evaluating LR_prediction_k_1.csv file
+7288 questions evaluated
+7288
+508
+{'f1': 16.522831846381134, 'exact_match': 6.970362239297475}
+Evaluating LR_prediction_k_10.csv file
+7288 questions evaluated
+7288
+594
+{'f1': 16.044632987709182, 'exact_match': 8.150384193194292}
+Evaluating LR_prediction_k_11.csv file
+7288 questions evaluated
+7288
+586
+{'f1': 16.085561662338876, 'exact_match': 8.040614709110868}
+Evaluating LR_prediction_k_12.csv file
+7288 questions evaluated
+7288
+581
+{'f1': 15.917997941440841, 'exact_match': 7.972008781558727}
+Evaluating LR_prediction_k_13.csv file
+7288 questions evaluated
+7288
+582
+{'f1': 15.930977441248004, 'exact_match': 7.985729967069155}
+Evaluating LR_prediction_k_14.csv file
+7288 questions evaluated
+7288
+710
+{'f1': 16.60765310357, 'exact_match': 9.742041712403951}
+Evaluating LR_prediction_k_15.csv file
+7288 questions evaluated
+7288
+748
+{'f1': 16.200154494583632, 'exact_match': 10.26344676180022}
+Evaluating LR_prediction_k_16.csv file
+7288 questions evaluated
+7288
+699
+{'f1': 15.588237869172998, 'exact_match': 9.591108671789243}
+Evaluating LR_prediction_k_17.csv file
+7288 questions evaluated
+7288
+750
+{'f1': 15.698539418612084, 'exact_match': 10.290889132821075}
+Evaluating LR_prediction_k_18.csv file
+7288 questions evaluated
+7288
+753
+{'f1': 16.83592637643407, 'exact_match': 10.33205268935236}
+Evaluating LR_prediction_k_19.csv file
+7288 questions evaluated
+7288
+280
+{'f1': 14.623741641148097, 'exact_match': 3.841931942919868}
+Evaluating LR_prediction_k_2.csv file
+7288 questions evaluated
+7288
+505
+{'f1': 16.072883259308895, 'exact_match': 6.929198682766191}
+Evaluating LR_prediction_k_20.csv file
+7288 questions evaluated
+7288
+315
+{'f1': 10.845776450415398, 'exact_match': 4.322173435784852}
+Evaluating LR_prediction_k_3.csv file
+7288 questions evaluated
+7288
+506
+{'f1': 16.052611931134074, 'exact_match': 6.942919868276619}
+Evaluating LR_prediction_k_4.csv file
+7288 questions evaluated
+7288
+507
+{'f1': 16.07836338217862, 'exact_match': 6.956641053787047}
+Evaluating LR_prediction_k_5.csv file
+7288 questions evaluated
+7288
+508
+{'f1': 16.029628067216272, 'exact_match': 6.970362239297475}
+Evaluating LR_prediction_k_6.csv file
+7288 questions evaluated
+7288
+613
+{'f1': 16.467423389900084, 'exact_match': 8.411086717892426}
+Evaluating LR_prediction_k_7.csv file
+7288 questions evaluated
+7288
+599
+{'f1': 16.151501916403394, 'exact_match': 8.218990120746433}
+Evaluating LR_prediction_k_8.csv file
+7288 questions evaluated
+7288
+595
+{'f1': 16.08472090577713, 'exact_match': 8.16410537870472}
+Evaluating LR_prediction_k_9.csv file
+7288 questions evaluated
+7288
+596
+{'f1': 16.09653562506221, 'exact_match': 8.177826564215149}
+Ashwins-MacBook-Pro:feature_extraction atamilse$ 
+
+#====================
+
+With all features:
+
+Evaluating LR_prediction.csv file
+10101 questions evaluated
+10101
+698
+{'f1': 15.966631446933485, 'exact_match': 6.91020691020691}
+
+Feature Ablation:
+
+C:\Anaconda3\envs\IBM_Watson\python.exe C:/Users/Aditya/Documents/COMSE6998_3_IBM_Watson/machine-comprehension-ensemble-learning/feature_extraction/evaluate-ml-predictions.py
+Evaluating LR_prediction_k_0.csv file
+10101 questions evaluated
+10101
+711
+{'f1': 15.994384119771151, 'exact_match': 7.0389070389070385}
+Evaluating LR_prediction_k_1.csv file
+10101 questions evaluated
+10101
+696
+{'f1': 15.673247583243333, 'exact_match': 6.89040689040689}
+Evaluating LR_prediction_k_10.csv file
+10101 questions evaluated
+10101
+695
+{'f1': 15.93627452437112, 'exact_match': 6.88050688050688}
+Evaluating LR_prediction_k_11.csv file
+10101 questions evaluated
+10101
+755
+{'f1': 16.22826298569297, 'exact_match': 7.474507474507474}
+Evaluating LR_prediction_k_12.csv file
+10101 questions evaluated
+10101
+693
+{'f1': 15.900725058009195, 'exact_match': 6.860706860706861}
+Evaluating LR_prediction_k_13.csv file
+10101 questions evaluated
+10101
+693
+{'f1': 15.90185648771205, 'exact_match': 6.860706860706861}
+Evaluating LR_prediction_k_14.csv file
+10101 questions evaluated
+10101
+694
+{'f1': 15.91175649761206, 'exact_match': 6.870606870606871}
+Evaluating LR_prediction_k_15.csv file
+10101 questions evaluated
+10101
+693
+{'f1': 15.90185648771205, 'exact_match': 6.860706860706861}
+Evaluating LR_prediction_k_16.csv file
+10101 questions evaluated
+10101
+701
+{'f1': 15.887409985199088, 'exact_match': 6.9399069399069395}
+Evaluating LR_prediction_k_17.csv file
+10101 questions evaluated
+10101
+760
+{'f1': 16.631174117342535, 'exact_match': 7.524007524007524}
+Evaluating LR_prediction_k_18.csv file
+10101 questions evaluated
+10101
+151
+{'f1': 14.009394896670099, 'exact_match': 1.494901494901495}
+Evaluating LR_prediction_k_19.csv file
+10101 questions evaluated
+10101
+519
+{'f1': 13.851019561087838, 'exact_match': 5.138105138105138}
+Evaluating LR_prediction_k_2.csv file
+10101 questions evaluated
+10101
+696
+{'f1': 15.939254734368966, 'exact_match': 6.89040689040689}
+Evaluating LR_prediction_k_20.csv file
+10101 questions evaluated
+10101
+681
+{'f1': 15.629672927145977, 'exact_match': 6.7419067419067416}
+Evaluating LR_prediction_k_3.csv file
+10101 questions evaluated
+10101
+696
+{'f1': 15.951265935451318, 'exact_match': 6.89040689040689}
+Evaluating LR_prediction_k_4.csv file
+10101 questions evaluated
+10101
+696
+{'f1': 15.951265935451318, 'exact_match': 6.89040689040689}
+Evaluating LR_prediction_k_5.csv file
+10101 questions evaluated
+10101
+696
+{'f1': 15.951265935451318, 'exact_match': 6.89040689040689}
+Evaluating LR_prediction_k_6.csv file
+10101 questions evaluated
+10101
+696
+{'f1': 15.951265935451318, 'exact_match': 6.89040689040689}
+Evaluating LR_prediction_k_7.csv file
+10101 questions evaluated
+10101
+696
+{'f1': 15.94550484213138, 'exact_match': 6.89040689040689}
+Evaluating LR_prediction_k_8.csv file
+10101 questions evaluated
+10101
+695
+{'f1': 15.93560483223137, 'exact_match': 6.88050688050688}
+Evaluating LR_prediction_k_9.csv file
+10101 questions evaluated
+10101
+695
+{'f1': 15.930046931936628, 'exact_match': 6.88050688050688}

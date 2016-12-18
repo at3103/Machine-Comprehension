@@ -1,0 +1,276 @@
+Evaluating MLP_prediction_alph1.csv file
+886 questions evaluated
+886
+21
+{'f1': 8.92499985842895, 'exact_match': 2.37020316027088}
+
+Evaluating MLP_prediction_alph11.csv file
+886 questions evaluated
+886
+4
+{'f1': 8.237217665433224, 'exact_match': 0.45146726862302483}
+
+Evaluating MLP_prediction_alph18.csv file
+886 questions evaluated
+886
+10
+{'f1': 8.133461643135837, 'exact_match': 1.1286681715575622}
+Evaluating MLP_prediction_alph19.csv file
+886 questions evaluated
+886
+5
+{'f1': 9.534026616134765, 'exact_match': 0.5643340857787811}
+Evaluating MLP_prediction_alph2.csv file
+886 questions evaluated
+886
+23
+{'f1': 9.337514150196474, 'exact_match': 2.595936794582393}
+Evaluating MLP_prediction_alph20.csv file
+886 questions evaluated
+886
+3
+{'f1': 12.711257780886415, 'exact_match': 0.33860045146726864}
+
+Evaluating MLP_prediction_alph27.csv file
+886 questions evaluated
+886
+9
+{'f1': 7.450857440631543, 'exact_match': 1.0158013544018059}
+Evaluating MLP_prediction_alph28.csv file
+886 questions evaluated
+886
+5
+{'f1': 9.727148391857883, 'exact_match': 0.5643340857787811}
+Evaluating MLP_prediction_alph29.csv file
+886 questions evaluated
+886
+8
+{'f1': 11.389304713352752, 'exact_match': 0.9029345372460497}
+Evaluating MLP_prediction_alph3.csv file
+886 questions evaluated
+886
+3
+{'f1': 7.560251804703915, 'exact_match': 0.33860045146726864}
+
+Evaluating MLP_prediction_alph36.csv file
+886 questions evaluated
+886
+14
+{'f1': 7.671892024096989, 'exact_match': 1.580135440180587}
+Evaluating MLP_prediction_alph37.csv file
+886 questions evaluated
+886
+3
+{'f1': 8.187132854425137, 'exact_match': 0.33860045146726864}
+Evaluating MLP_prediction_alph38.csv file
+886 questions evaluated
+886
+6
+{'f1': 10.400426870366978, 'exact_match': 0.6772009029345373}
+Evaluating MLP_prediction_alph45.csv file
+886 questions evaluated
+886
+18
+{'f1': 5.7496106483213, 'exact_match': 2.0316027088036117}
+Evaluating MLP_prediction_alph46.csv file
+886 questions evaluated
+886
+10
+{'f1': 10.437029676067878, 'exact_match': 1.1286681715575622}
+Evaluating MLP_prediction_alph47.csv file
+886 questions evaluated
+886
+16
+{'f1': 9.764452243067968, 'exact_match': 1.8058690744920993}
+Evaluating MLP_prediction_alph55.csv file
+886 questions evaluated
+886
+13
+{'f1': 8.476150533778782, 'exact_match': 1.4672686230248306}
+Evaluating MLP_prediction_alph56.csv file
+886 questions evaluated
+886
+20
+{'f1': 9.46832290813164, 'exact_match': 2.2573363431151243}
+Evaluating MLP_prediction_alph57.csv file
+886 questions evaluated
+886
+17
+{'f1': 9.032882242342788, 'exact_match': 1.9187358916478556}
+Evaluating MLP_prediction_alph58.csv file
+886 questions evaluated
+886
+45
+{'f1': 7.547455487901642, 'exact_match': 5.07900677200903}
+
+Evaluating MLP_prediction_alph6.csv file
+886 questions evaluated
+886
+3
+{'f1': 14.592817089770646, 'exact_match': 0.33860045146726864}
+Evaluating MLP_prediction_alph63.csv file
+886 questions evaluated
+886
+10
+{'f1': 8.31759451515217, 'exact_match': 1.1286681715575622}
+Evaluating MLP_prediction_alph64.csv file
+886 questions evaluated
+886
+20
+{'f1': 8.527742914139315, 'exact_match': 2.2573363431151243}
+Evaluating MLP_prediction_alph65.csv file
+886 questions evaluated
+886
+21
+{'f1': 8.986838122092033, 'exact_match': 2.37020316027088}
+Evaluating MLP_prediction_alph67.csv file
+886 questions evaluated
+886
+22
+{'f1': 6.665014909919303, 'exact_match': 2.4830699774266365}
+Evaluating MLP_prediction_alph68.csv file
+886 questions evaluated
+886
+14
+{'f1': 5.572628733046307, 'exact_match': 1.580135440180587}
+Evaluating MLP_prediction_alph69.csv file
+886 questions evaluated
+886
+11
+{'f1': 11.248977607419285, 'exact_match': 1.2415349887133182}
+Evaluating MLP_prediction_alph72.csv file
+886 questions evaluated
+886
+11
+{'f1': 7.894955493296314, 'exact_match': 1.2415349887133182}
+Evaluating MLP_prediction_alph74.csv file
+886 questions evaluated
+886
+4
+{'f1': 10.251436710251477, 'exact_match': 0.45146726862302483}
+Evaluating MLP_prediction_alph81.csv file
+886 questions evaluated
+886
+19
+{'f1': 5.728994139035944, 'exact_match': 2.144469525959368}
+
+
+i is  1  Learning rate:  1e-05  Alpha is  0.1
+i is  2  Learning rate:  0.0001  Alpha is  0.1
+i is  3  Learning rate:  0.001  Alpha is  0.1
+i is  4  Learning rate:  0.01  Alpha is  0.1
+i is  5  Learning rate:  0.1  Alpha is  0.1
+i is  6  Learning rate:  0.002  Alpha is  0.1
+i is  7  Learning rate:  0.4  Alpha is  0.1
+i is  8  Learning rate:  0.3  Alpha is  0.1
+i is  9  Learning rate:  6e-07  Alpha is  0.1
+i is  10  Learning rate:  1e-05  Alpha is  0.01
+i is  11  Learning rate:  0.0001  Alpha is  0.01
+i is  12  Learning rate:  0.001  Alpha is  0.01
+i is  13  Learning rate:  0.01  Alpha is  0.01
+i is  14  Learning rate:  0.1  Alpha is  0.01
+i is  15  Learning rate:  0.002  Alpha is  0.01
+i is  16  Learning rate:  0.4  Alpha is  0.01
+i is  17  Learning rate:  0.3  Alpha is  0.01 #zero zero
+i is  18  Learning rate:  6e-07  Alpha is  0.01
+i is  19  Learning rate:  1e-05  Alpha is  0.001
+i is  20  Learning rate:  0.0001  Alpha is  0.001
+i is  21  Learning rate:  0.001  Alpha is  0.001
+i is  22  Learning rate:  0.01  Alpha is  0.001
+i is  23  Learning rate:  0.1  Alpha is  0.001
+i is  24  Learning rate:  0.002  Alpha is  0.001
+i is  25  Learning rate:  0.4  Alpha is  0.001
+i is  26  Learning rate:  0.3  Alpha is  0.001
+i is  27  Learning rate:  6e-07  Alpha is  0.001
+i is  28  Learning rate:  1e-05  Alpha is  0.0001
+i is  29  Learning rate:  0.0001  Alpha is  0.0001
+i is  30  Learning rate:  0.001  Alpha is  0.0001
+i is  31  Learning rate:  0.01  Alpha is  0.0001
+i is  32  Learning rate:  0.1  Alpha is  0.0001
+i is  33  Learning rate:  0.002  Alpha is  0.0001
+i is  34  Learning rate:  0.4  Alpha is  0.0001
+i is  35  Learning rate:  0.3  Alpha is  0.0001
+i is  36  Learning rate:  6e-07  Alpha is  0.0001 
+i is  37  Learning rate:  1e-05  Alpha is  1e-05
+i is  38  Learning rate:  0.0001  Alpha is  1e-05
+i is  39  Learning rate:  0.001  Alpha is  1e-05
+i is  40  Learning rate:  0.01  Alpha is  1e-05
+i is  41  Learning rate:  0.1  Alpha is  1e-05
+i is  42  Learning rate:  0.002  Alpha is  1e-05
+i is  43  Learning rate:  0.4  Alpha is  1e-05
+i is  44  Learning rate:  0.3  Alpha is  1e-05
+i is  45  Learning rate:  6e-07  Alpha is  1e-05
+i is  46  Learning rate:  1e-05  Alpha is  1e-07
+i is  47  Learning rate:  0.0001  Alpha is  1e-07
+i is  48  Learning rate:  0.001  Alpha is  1e-07
+i is  49  Learning rate:  0.01  Alpha is  1e-07
+i is  50  Learning rate:  0.1  Alpha is  1e-07
+i is  51  Learning rate:  0.002  Alpha is  1e-07
+i is  52  Learning rate:  0.4  Alpha is  1e-07
+i is  53  Learning rate:  0.3  Alpha is  1e-07
+i is  54  Learning rate:  6e-07  Alpha is  1e-07
+i is  55  Learning rate:  1e-05  Alpha is  1
+i is  56  Learning rate:  0.0001  Alpha is  1
+i is  57  Learning rate:  0.001  Alpha is  1
+i is  58  Learning rate:  0.01  Alpha is  1
+i is  59  Learning rate:  0.1  Alpha is  1
+i is  60  Learning rate:  0.002  Alpha is  1
+i is  61  Learning rate:  0.4  Alpha is  1
+i is  62  Learning rate:  0.3  Alpha is  1
+i is  63  Learning rate:  6e-07  Alpha is  1
+i is  64  Learning rate:  1e-05  Alpha is  0.5
+i is  65  Learning rate:  0.0001  Alpha is  0.5
+i is  66  Learning rate:  0.001  Alpha is  0.5
+i is  67  Learning rate:  0.01  Alpha is  0.5
+i is  68  Learning rate:  0.1  Alpha is  0.5
+i is  69  Learning rate:  0.002  Alpha is  0.5
+i is  70  Learning rate:  0.4  Alpha is  0.5
+i is  71  Learning rate:  0.3  Alpha is  0.5
+i is  72  Learning rate:  6e-07  Alpha is  0.5
+i is  73  Learning rate:  1e-05  Alpha is  4e-06
+i is  74  Learning rate:  0.0001  Alpha is  4e-06
+i is  75  Learning rate:  0.001  Alpha is  4e-06
+i is  76  Learning rate:  0.01  Alpha is  4e-06
+i is  77  Learning rate:  0.1  Alpha is  4e-06
+i is  78  Learning rate:  0.002  Alpha is  4e-06
+i is  79  Learning rate:  0.4  Alpha is  4e-06
+i is  80  Learning rate:  0.3  Alpha is  4e-06
+i is  81  Learning rate:  6e-07  Alpha is  4e-06
+
+
+
+
+i is  1  Learning rate:  1e-05  Alpha is  0.1
+i is  2  Learning rate:  0.0001  Alpha is  0.1
+i is  3  Learning rate:  0.001  Alpha is  0.1
+i is  6  Learning rate:  0.002  Alpha is  0.1
+i is  11  Learning rate:  0.0001  Alpha is  0.01
+i is  18  Learning rate:  6e-07  Alpha is  0.01
+i is  19  Learning rate:  1e-05  Alpha is  0.001
+i is  20  Learning rate:  0.0001  Alpha is  0.001
+i is  27  Learning rate:  6e-07  Alpha is  0.001
+i is  28  Learning rate:  1e-05  Alpha is  0.0001
+i is  29  Learning rate:  0.0001  Alpha is  0.0001
+i is  36  Learning rate:  6e-07  Alpha is  0.0001 
+i is  37  Learning rate:  1e-05  Alpha is  1e-05
+i is  38  Learning rate:  0.0001  Alpha is  1e-05
+i is  45  Learning rate:  6e-07  Alpha is  1e-05
+i is  46  Learning rate:  1e-05  Alpha is  1e-07
+i is  47  Learning rate:  0.0001  Alpha is  1e-07
+i is  55  Learning rate:  1e-05  Alpha is  1
+i is  56  Learning rate:  0.0001  Alpha is  1
+i is  57  Learning rate:  0.001  Alpha is  1
+
+i is  58  Learning rate:  0.01  Alpha is  1
+
+i is  63  Learning rate:  6e-07  Alpha is  1
+i is  64  Learning rate:  1e-05  Alpha is  0.5
+i is  65  Learning rate:  0.0001  Alpha is  0.5
+i is  67  Learning rate:  0.01  Alpha is  0.5
+i is  68  Learning rate:  0.1  Alpha is  0.5
+
+i is  69  Learning rate:  0.002  Alpha is  0.5
+
+i is  72  Learning rate:  6e-07  Alpha is  0.5
+i is  74  Learning rate:  0.0001  Alpha is  4e-06
+i is  81  Learning rate:  6e-07  Alpha is  4e-06
