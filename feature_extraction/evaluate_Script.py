@@ -78,24 +78,16 @@ def evaluate(ground_truths_dict, predictions):
 #predictions_file_path = "../data/predictions/lr_combined_fdata/next/" 
 #predictions_file_path = "../data/predictions/gbr/"
 #predictions_file_path = "../data/predictions/lsvr/"
-predictions_file_path = "../data/predictions/classification/latest/"
-
+predictions_file_path = "../data/predictions/lr/check/"
 #predictions_file_path = "../data/predictions/RandomForest/"
 def get_max_predictions(prediction_dict):
     max_predict = defaultdict(str)
     for key in prediction_dict.keys():
-        max = ['T','',-1]
+        max = [0.0,'']
         predictions = prediction_dict[key]
         for prediction in predictions:
-            if prediction[0] < max[0]:
+            if prediction[0] > max[0] :
                 max = prediction
-                #if len(max[1]) < len(prediction[1]) and len(prediction[1]) < 8:
-            elif prediction[0] == max[0] and prediction[2] > max[2]:
-                max = prediction
-                #print ("hey")
-                # if prediction[0] != 'N':
-                #     print (max,prediction)
-                #max = prediction
 
         max_predict[key] = max[1]
     return max_predict
@@ -111,17 +103,13 @@ def evaluate_ml_result(file):
         inputreader = csv.reader(csvfile, delimiter=',')
         inputreader.next()
         for row in inputreader:
-            predicted_F1_score = str(row[-1])
-            ground_truths = row[-2]
-            qid = row[-3]
-            constituent = str(row[-4])
-            lemmas = float(row[-7])
-            ner = float(row[-8])
+            predicted_F1_score = float(row[-4])
+            ground_truths = row[-1]
+            qid = row[-2]
+            constituent = str(row[-3])
             prediction_list = list()
             prediction_list.append(predicted_F1_score)
             prediction_list.append(constituent)
-            prediction_list.append(lemmas)
-            #prediction_list.append(ner)
             
             predictions_qid[str(qid)].append(prediction_list)
             #print(ground_truths)

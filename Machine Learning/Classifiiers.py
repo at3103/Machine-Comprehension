@@ -61,51 +61,52 @@ qid = array[:,24]
 
 #Enable for labels
 
+class_weight ={}
 
 for i in range(len(Y)):
 	if float(Y[i]) == 1.0:
-		print("Exact match")
 		Y[i] = 'A'
 	elif float(Y[i]) >= 0.94: 
-		print("B")
 		Y[i] = 'B'
 	elif float(Y[i]) >= 0.90:
-		print("C")
 		Y[i] = 'C'
 	elif float(Y[i]) >= 0.87:
-		print("D")
 		Y[i] = 'D'
 	elif float(Y[i]) >= 0.84:
-		print("E")
 		Y[i] = 'E'
 	elif float(Y[i]) >= 0.80:
-		print("F")
 		Y[i] = 'F'
 	elif float(Y[i]) >= 0.75:
-		print("G")
 		Y[i] = 'G'
 	elif float(Y[i]) >= 0.70:
-		print("H")
 		Y[i] = 'H'		
 	elif float(Y[i]) >= 0.65:
-		print("I")
 		Y[i] = 'I'		
 	elif float(Y[i]) >= 0.60:
-		print("J")
 		Y[i] = 'J'		
 	elif float(Y[i]) >= 0.50:
-		print("K")
 		Y[i] = 'K'		
 	elif float(Y[i]) >= 0.40:
-		print("L")
 		Y[i] = 'L'		
 	elif float(Y[i]) >= 0.30:
-		print("M")
-		Y[i] = 'M'				
-	else:
+		Y[i] = 'M'
+	elif float(Y[i]) >= 0.20:
 		Y[i] = 'N'
+	elif float(Y[i]) >= 0.10:
+		Y[i] = 'O'			
+	elif float(Y[i]) >= 0.08:
+		Y[i] = 'P'
+	elif float(Y[i]) >= 0.05:
+		Y[i] = 'Q'
+	elif float(Y[i]) == 0.0:
+		Y[i] = 'S'	
+	else:
+		Y[i] = 'R'
 
-print Counter(Y)
+for s in set(Y):
+	class_weight[s] = 90 - ord(s)
+
+print "In whole data",Counter(Y)
 #Set the seed for randomness here
 seed = 7
 gkf = GroupKFold(n_splits=2)
@@ -139,7 +140,8 @@ Y_test = Y_test1[cur_splits[1]]
 print X_train.shape, X_test.shape
 print Y_train.shape, Y_test.shape
 
-
+print "In train",Counter(Y_train)
+print "In test",Counter(Y_test)
 
 cv_seed = 7
 n_fold = 10
@@ -153,16 +155,14 @@ models = []
 try :
 	models.append(('LR', LogisticRegression()))
 	models.append(('LDA', LinearDiscriminantAnalysis()))
-	models.append(('SVM', LinearSVC(dual=False,class_weight = {'A': 9, 'B':8, 'C':7})))
+	models.append(('SVM', LinearSVC(dual=False,class_weight = class_weight)))
 	models.append(('dt', DecisionTreeClassifier(max_depth=4)))
 	models.append(('rf',RandomForestClassifier(n_estimators=20)))
 	#models.append(('CART', DecisionTreeClassifier()))
 	models.append(('KNN', KNeighborsClassifier()))
 	#models.append(('SVM', SVC(kernel='rbf', probability=True)))
 	#models.append(('SVR', SVR(kernel='linear', C=1e3)))
-	models.append(('LinearRegression', linear_model.LinearRegression()))
-	models.append(('BayesianRegression', linear_model.BayesianRidge()))
-	models.append(('Perceptron', linear_model.Perceptron()))
+
 except Exception, e:
 	traceback.print_exc()
 #Models_Evaluation
@@ -189,6 +189,7 @@ for i in range(0,len(models)):
 	pred = clf.predict(X_test[:,k:-4])
 	ac_score = accuracy_score(Y_test, pred)
 	print models[i][0],"Accuracy is ", ac_score
+	print "In predicted data",Counter(pred)
 	features = ['POS','NER','lemmas','dep_tree','F1','span_words', 'q_words', 'ground_truth','predicted_F1_score']
 	combined_feature = []
 	for j,item in enumerate(X_test[:,-8:]):
