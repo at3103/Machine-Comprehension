@@ -17,15 +17,15 @@ from sklearn.model_selection import GroupKFold
 from sklearn import linear_model
 from sklearn.ensemble import AdaBoostRegressor
 import numpy as np
-from sklearn.ensemble.forest import ExtraTreeRegressor, ExtraTreesRegressor
-from sklearn.linear_model.huber import HuberRegressor
-from sklearn.kernel_ridge import KernelRidge
+#from sklearn.ensemble.forest import ExtraTreeRegressor, ExtraTreesRegressor
+#from sklearn.linear_model.huber import HuberRegressor
+#from sklearn.kernel_ridge import KernelRidge
 from sklearn.linear_model.base import LinearRegression
-from sklearn.svm.classes import LinearSVR, NuSVR
-from sklearn.linear_model.ransac import RANSACRegressor
+#from sklearn.svm.classes import LinearSVR, NuSVR
+#from sklearn.linear_model.ransac import RANSACRegressor
 from sklearn.ensemble.forest import RandomForestRegressor
 from sklearn.linear_model.ridge import Ridge, RidgeCV
-from sklearn.linear_model.stochastic_gradient import SGDRegressor
+#from sklearn.linear_model.stochastic_gradient import SGDRegressor
 
 	
 n_x = 22	#Columns which are considered features
@@ -91,38 +91,38 @@ name_list =['ExtraTreeRegressor', 'ExtraTreesRegressor',
 
 #Load the models
 models = []
-models.append(('ExtraTreeRegressor', ExtraTreeRegressor()))
-models.append(('ExtraTreesRegressor', ExtraTreesRegressor()))
-#models.append(('GradientBoostingRegressor', GradientBoostingRegressor()))
-models.append(('HuberRegressor', HuberRegressor()))
-models.append(('KernelRidge', KernelRidge()))
-models.append(('LinearRegression', LinearRegression()))
-models.append(('LinearSVR', LinearSVR()))
-models.append(('NuSVR', NuSVR()))
-models.append(('RANSACRegressor', RANSACRegressor()))
-models.append(('RandomForestRegressor', RandomForestRegressor()))
-models.append(('Ridge', Ridge()))
-models.append(('RidgeCV', RidgeCV()))
-models.append(('SGDRegressor', SGDRegressor()))
+# models.append(('ExtraTreeRegressor', ExtraTreeRegressor()))
+# models.append(('ExtraTreesRegressor', ExtraTreesRegressor()))
+# #models.append(('GradientBoostingRegressor', GradientBoostingRegressor()))
+# models.append(('HuberRegressor', HuberRegressor()))
+# models.append(('KernelRidge', KernelRidge()))
+# models.append(('LinearRegression', LinearRegression()))
+# models.append(('LinearSVR', LinearSVR()))
+# models.append(('NuSVR', NuSVR()))
+# models.append(('RANSACRegressor', RANSACRegressor()))
+# models.append(('RandomForestRegressor', RandomForestRegressor()))
+# models.append(('Ridge', Ridge()))
+# models.append(('RidgeCV', RidgeCV()))
+# models.append(('SGDRegressor', SGDRegressor()))
 
 
 pred = []
+name = 'Ridge'
+#for name,model in models:
+for n in [10,50,200,400,600]:
+	reg = AdaBoostRegressor(n_estimators=n, base_estimator=Ridge())
 
-for name,model in models:
-	for n in [200,400,600]:
-		reg = AdaBoostRegressor(n_estimators=n, base_estimator=model)
-
-		reg.fit(X_train[:,:-4], Y_train) 
-		pred = reg.predict(X_test[:,:-4])
-		ac_score = mean_squared_error(Y_test, pred)
-		print "AdaboostRegressor for "+name+" MSE is ", ac_score, "and n = ",n
-		features = ['span_words', 'q_words', 'ground_truth','predicted_F1_score']
-		combined_feature = []
-		for j,item in enumerate(X_test[:,-3:]):
-			combined_feature.append(list(item))
-			combined_feature[j].append((pred[j]))
-		df = pd.DataFrame.from_records(combined_feature, columns = features)
-		output_file_path = "../data/predictions/Adabosot/"
-		if not os.path.exists(output_file_path):
-			os.makedirs(output_file_path)
-		df.to_csv(os.path.join(output_file_path,'AdaboostRegressor_prediction_'+name+str(n)+'.csv'))
+	reg.fit(X_train[:,:-4], Y_train) 
+	pred = reg.predict(X_test[:,:-4])
+	ac_score = mean_squared_error(Y_test, pred)
+	print "AdaboostRegressor for "+name+" MSE is ", ac_score, "and n = ",n
+	features = ['span_words', 'q_words', 'ground_truth','predicted_F1_score']
+	combined_feature = []
+	for j,item in enumerate(X_test[:,-3:]):
+		combined_feature.append(list(item))
+		combined_feature[j].append((pred[j]))
+	df = pd.DataFrame.from_records(combined_feature, columns = features)
+	output_file_path = "../data/predictions/Adabosot/"
+	if not os.path.exists(output_file_path):
+		os.makedirs(output_file_path)
+	df.to_csv(os.path.join(output_file_path,'AdaboostRegressor_prediction_'+name+str(n)+'.csv'))

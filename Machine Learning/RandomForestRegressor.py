@@ -81,8 +81,8 @@ print Y_train.shape, Y_test.shape
 
 
 pred = []
-for n in range(50,500,20):
-	reg = RandomForestRegressor(n_estimators=n, n_jobs = -1)
+for n in range(50,170,20):
+	reg = RandomForestRegressor(n_estimators=n,warm_start=True, n_jobs = -1)
 	reg.fit(X_train[:,:-4], Y_train) 
 	pred = reg.predict(X_test[:,:-4])
 	ac_score = mean_squared_error(Y_test, pred)
@@ -93,7 +93,7 @@ for n in range(50,500,20):
 		combined_feature.append(list(item))
 		combined_feature[j].append((pred[j]))
 	df = pd.DataFrame.from_records(combined_feature, columns = features)
-	output_file_path = "../data/predictions/RandomForest/"
+	output_file_path = "../data/predictions/RandomForest/warm_start"
 	if not os.path.exists(output_file_path):
 		os.makedirs(output_file_path)
 	df.to_csv(os.path.join(output_file_path,'RandomForestRegressor_prediction_'+str(n)+'.csv'))

@@ -27,14 +27,15 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import cross_val_predict
 from sklearn.model_selection import GroupKFold
-
+from collections import Counter
 
 n_x = 22	#Columns which are considered features
 n_y = 22 # the column for label
 
 # Load dataset
 frames=[]
-data_file_path = "../data/featuredata_br/"
+#data_file_path = "../data/featuredata_br/"
+data_file_path = "../data/featuredata_br_copy/"
 data_files = [f for f in listdir(data_file_path) if isfile(join(data_file_path, f)) and f.endswith('.csv')]
 for i in data_files:
 	url = data_file_path + i
@@ -60,14 +61,51 @@ qid = array[:,24]
 
 #Enable for labels
 
+
 for i in range(len(Y)):
 	if float(Y[i]) == 1.0:
-		Y[i] = 'Y'
-	elif float(Y[i]) >= 0.25:
-		Y[i] = 'M'
+		print("Exact match")
+		Y[i] = 'A'
+	elif float(Y[i]) >= 0.94: 
+		print("B")
+		Y[i] = 'B'
+	elif float(Y[i]) >= 0.90:
+		print("C")
+		Y[i] = 'C'
+	elif float(Y[i]) >= 0.87:
+		print("D")
+		Y[i] = 'D'
+	elif float(Y[i]) >= 0.84:
+		print("E")
+		Y[i] = 'E'
+	elif float(Y[i]) >= 0.80:
+		print("F")
+		Y[i] = 'F'
+	elif float(Y[i]) >= 0.75:
+		print("G")
+		Y[i] = 'G'
+	elif float(Y[i]) >= 0.70:
+		print("H")
+		Y[i] = 'H'		
+	elif float(Y[i]) >= 0.65:
+		print("I")
+		Y[i] = 'I'		
+	elif float(Y[i]) >= 0.60:
+		print("J")
+		Y[i] = 'J'		
+	elif float(Y[i]) >= 0.50:
+		print("K")
+		Y[i] = 'K'		
+	elif float(Y[i]) >= 0.40:
+		print("L")
+		Y[i] = 'L'		
+	elif float(Y[i]) >= 0.30:
+		print("M")
+		Y[i] = 'M'				
 	else:
 		Y[i] = 'N'
 
+print Counter(Y)
 #Set the seed for randomness here
 seed = 7
 gkf = GroupKFold(n_splits=2)
@@ -115,15 +153,15 @@ models = []
 try :
 	models.append(('LR', LogisticRegression()))
 	models.append(('LDA', LinearDiscriminantAnalysis()))
-	models.append(('SVM', LinearSVC(dual=False,class_weight = {'Y': 4, 'M':2})))
-	#models.append(('dt', DecisionTreeClassifier(max_depth=4)))
-	models.append(('rf',RandomForestClassifier(n_estimators=1000)))
+	models.append(('SVM', LinearSVC(dual=False,class_weight = {'A': 9, 'B':8, 'C':7})))
+	models.append(('dt', DecisionTreeClassifier(max_depth=4)))
+	models.append(('rf',RandomForestClassifier(n_estimators=20)))
 	#models.append(('CART', DecisionTreeClassifier()))
 	models.append(('KNN', KNeighborsClassifier()))
 	#models.append(('SVM', SVC(kernel='rbf', probability=True)))
 	#models.append(('SVR', SVR(kernel='linear', C=1e3)))
-	#models.append(('LinearRegression', linear_model.LinearRegression()))
-	#models.append(('BayesianRegression', linear_model.BayesianRidge()))
+	models.append(('LinearRegression', linear_model.LinearRegression()))
+	models.append(('BayesianRegression', linear_model.BayesianRidge()))
 	models.append(('Perceptron', linear_model.Perceptron()))
 except Exception, e:
 	traceback.print_exc()
@@ -144,23 +182,22 @@ for name, model in models:
 #  	if Y_test[i] < 1.0:
 #  		Y_test[i] = 0.0
 # Y_test = np.asarray(Y_test, dtype="f4")
-
+k = 0
 for i in range(0,len(models)):
-		for k in range(0,n_x-1):
-			clf = models[i][1]
-			clf.fit(X_train[:,k:-4], Y_train)
-			pred = clf.predict(X_test[:,k:-4])
-			ac_score = accuracy_score(Y_test, pred)
-			print models[i][0],"Accuracy is ", ac_score
-			features = ['span_words', 'q_words', 'ground_truth','predicted_F1_score']
-			combined_feature = []
-			for j,item in enumerate(X_test[:,-3:]):
-				combined_feature.append(list(item))
-				combined_feature[j].append((pred[j]))
+	clf = models[i][1]
+	clf.fit(X_train[:,k:-4], Y_train)
+	pred = clf.predict(X_test[:,k:-4])
+	ac_score = accuracy_score(Y_test, pred)
+	print models[i][0],"Accuracy is ", ac_score
+	features = ['POS','NER','lemmas','dep_tree','F1','span_words', 'q_words', 'ground_truth','predicted_F1_score']
+	combined_feature = []
+	for j,item in enumerate(X_test[:,-8:]):
+		combined_feature.append(list(item))
+		combined_feature[j].append((pred[j]))
 
-			df = pd.DataFrame.from_records(combined_feature, columns = features)
-			output_file_path = "../data/predictions/classification/"
-			if not os.path.exists(output_file_path):
-				os.makedirs(output_file_path)
-			df.to_csv(os.path.join(output_file_path,models[i][0]+ str(k) +".csv"))
+	df = pd.DataFrame.from_records(combined_feature, columns = features)
+	output_file_path = "../data/predictions/classification/latest/"
+	if not os.path.exists(output_file_path):
+		os.makedirs(output_file_path)
+	df.to_csv(os.path.join(output_file_path,models[i][0]+ str(k) +".csv"))
 
